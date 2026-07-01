@@ -9,113 +9,78 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
 <style>
   :root{
-    --ink:#1C2B33;
-    --paper:#F7F5F0;
-    --paper-line:#DAD4C6;
-    --sig:#0F6657;
-    --sig-soft:#E4F0EC;
-    --cemei:#B5563C;
-    --cemei-soft:#F6E8E2;
+    --ink:#1C2B33; --paper:#F7F5F0; --paper-line:#DAD4C6;
+    --sig:#0F6657; --sig-soft:#E4F0EC;
+    --cemei:#B5563C; --cemei-soft:#F6E8E2;
     --muted:#6B6458;
-    --display: 'Source Serif 4', Georgia, serif;
-    --mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, monospace;
-    --sans: 'Inter', system-ui, sans-serif;
+    --display:'Source Serif 4',Georgia,serif;
+    --mono:'IBM Plex Mono',ui-monospace,SFMono-Regular,monospace;
+    --sans:'Inter',system-ui,sans-serif;
   }
   *{box-sizing:border-box;}
-  body{
-    margin:0;
-    background:var(--paper);
-    color:var(--ink);
-    font-family:var(--sans);
-    -webkit-font-smoothing:antialiased;
-  }
-  .wrap{ max-width:1080px; margin:0 auto; padding:48px 28px 80px; }
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);-webkit-font-smoothing:antialiased;}
+  .wrap{max-width:1140px;margin:0 auto;padding:40px 24px 80px;}
 
-  header.masthead{
-    border-bottom:2px solid var(--ink);
-    padding-bottom:20px;
-    margin-bottom:32px;
-    display:flex;
-    justify-content:space-between;
-    align-items:flex-end;
-    flex-wrap:wrap;
-    gap:16px;
-  }
-  .masthead-title{ font-family:var(--display); font-weight:600; font-size:34px; letter-spacing:-0.01em; }
-  .masthead-sub{ font-family:var(--mono); font-size:12px; color:var(--muted); text-transform:uppercase; letter-spacing:0.08em; margin-top:6px; }
-  .masthead-stamp{ font-family:var(--mono); font-size:12px; color:var(--muted); text-align:right; line-height:1.6; }
+  /* MASTHEAD */
+  header.masthead{border-bottom:2px solid var(--ink);padding-bottom:18px;margin-bottom:28px;display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:12px;}
+  .masthead-title{font-family:var(--display);font-weight:600;font-size:32px;letter-spacing:-0.01em;}
+  .masthead-sub{font-family:var(--mono);font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;margin-top:4px;}
+  .masthead-stamp{font-family:var(--mono);font-size:11px;color:var(--muted);text-align:right;line-height:1.7;}
 
-  .filters{
-    display:flex; gap:14px; align-items:end; flex-wrap:wrap;
-    background:#fff;
-    border:1px solid var(--paper-line);
-    border-radius:4px;
-    padding:18px 20px;
-    margin-bottom:28px;
-  }
-  .field{ display:flex; flex-direction:column; gap:6px; }
-  .field label{ font-size:11px; text-transform:uppercase; letter-spacing:0.06em; color:var(--muted); font-weight:600; }
-  .field input{
-    font-family:var(--mono); font-size:14px;
-    border:1px solid var(--paper-line); border-radius:3px;
-    padding:8px 10px; background:var(--paper); color:var(--ink);
-    min-width:150px;
-  }
-  .field input:focus{ outline:2px solid var(--ink); outline-offset:1px; }
-  button#btnBuscar{
-    font-family:var(--sans); font-weight:600; font-size:13px;
-    background:var(--ink); color:var(--paper);
-    border:none; border-radius:3px; padding:10px 20px; cursor:pointer;
-  }
-  button#btnBuscar:hover{ background:#0e1a20; }
-  button#btnBuscar:focus-visible{ outline:2px solid var(--ink); outline-offset:2px; }
+  /* FILTROS */
+  .filters{display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap;background:#fff;border:1px solid var(--paper-line);border-radius:4px;padding:16px 18px;margin-bottom:22px;}
+  .field{display:flex;flex-direction:column;gap:5px;}
+  .field label{font-size:10.5px;text-transform:uppercase;letter-spacing:0.06em;color:var(--muted);font-weight:600;}
+  .field input,.field select{font-family:var(--mono);font-size:13px;border:1px solid var(--paper-line);border-radius:3px;padding:7px 10px;background:var(--paper);color:var(--ink);min-width:140px;}
+  .field select{cursor:pointer;}
+  .field input:focus,.field select:focus{outline:2px solid var(--ink);outline-offset:1px;}
+  button#btnBuscar{font-family:var(--sans);font-weight:600;font-size:13px;background:var(--ink);color:var(--paper);border:none;border-radius:3px;padding:9px 20px;cursor:pointer;white-space:nowrap;}
+  button#btnBuscar:hover{background:#0e1a20;}
 
-  .estado{ font-family:var(--mono); font-size:13px; color:var(--muted); margin:-10px 0 24px; min-height:18px; }
-  .estado.error{ color:var(--cemei); }
+  .estado{font-family:var(--mono);font-size:12px;color:var(--muted);margin:-8px 0 20px;min-height:16px;}
+  .estado.error{color:var(--cemei);}
 
-  .summary{ display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:1px; background:var(--paper-line); border:1px solid var(--paper-line); margin-bottom:36px; }
-  .summary .card{ background:#fff; padding:20px 22px; }
-  .summary .card .label{ font-size:11px; text-transform:uppercase; letter-spacing:0.06em; color:var(--muted); font-weight:600; margin-bottom:10px; }
-  .summary .card .value{ font-family:var(--mono); font-size:26px; font-weight:600; font-variant-numeric:tabular-nums; }
-  .summary .card.sig .value{ color:var(--sig); }
-  .summary .card.cemei .value{ color:var(--cemei); }
+  /* CARDS */
+  .summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1px;background:var(--paper-line);border:1px solid var(--paper-line);margin-bottom:32px;}
+  .summary .card{background:#fff;padding:18px 20px;}
+  .summary .card .label{font-size:10.5px;text-transform:uppercase;letter-spacing:0.06em;color:var(--muted);font-weight:600;margin-bottom:8px;}
+  .summary .card .value{font-family:var(--mono);font-size:22px;font-weight:600;font-variant-numeric:tabular-nums;line-height:1.2;}
+  .summary .card.sig .value{color:var(--sig);}
+  .summary .card.cemei .value{color:var(--cemei);}
 
-  section.block{ margin-bottom:40px; }
-  .block-title{
-    font-family:var(--display); font-size:20px; font-weight:600;
-    display:flex; align-items:baseline; gap:10px; margin-bottom:18px;
-  }
-  .block-title .n{ font-family:var(--mono); font-size:12px; color:var(--muted); }
+  /* SECCIONES */
+  section.block{margin-bottom:36px;}
+  .block-title{font-family:var(--display);font-size:19px;font-weight:600;display:flex;align-items:baseline;gap:8px;margin-bottom:14px;}
+  .block-title .n{font-family:var(--mono);font-size:11px;color:var(--muted);}
 
-  .chart-card{ background:#fff; border:1px solid var(--paper-line); border-radius:4px; padding:24px; height:340px; }
+  /* CHART */
+  .chart-card{background:#fff;border:1px solid var(--paper-line);border-radius:4px;padding:22px;height:360px;}
 
-  table{ width:100%; border-collapse:collapse; background:#fff; border:1px solid var(--paper-line); }
-  thead th{
-    text-align:left; font-size:11px; text-transform:uppercase; letter-spacing:0.05em;
-    color:var(--muted); font-weight:600; padding:12px 14px;
-    border-bottom:2px solid var(--ink);
-    position:sticky; top:0; background:#fff;
-  }
-  tbody td{ padding:11px 14px; border-bottom:1px solid var(--paper-line); font-size:13.5px; vertical-align:top; }
-  tbody tr:hover{ background:var(--paper); }
-  td.num{ font-family:var(--mono); font-variant-numeric:tabular-nums; text-align:right; white-space:nowrap; }
-  td.concepto{ color:var(--muted); max-width:340px; }
-  .badge{
-    font-family:var(--mono); font-size:10.5px; font-weight:600; text-transform:uppercase;
-    letter-spacing:0.04em; padding:3px 8px; border-radius:3px; display:inline-block;
-  }
-  .badge.sig{ background:var(--sig-soft); color:var(--sig); }
-  .badge.cemei{ background:var(--cemei-soft); color:var(--cemei); }
+  /* TABLA */
+  table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--paper-line);}
+  thead th{text-align:left;font-size:10.5px;text-transform:uppercase;letter-spacing:0.05em;color:var(--muted);font-weight:600;padding:11px 12px;border-bottom:2px solid var(--ink);position:sticky;top:0;background:#fff;white-space:nowrap;}
+  tbody td{padding:10px 12px;border-bottom:1px solid var(--paper-line);font-size:13px;vertical-align:top;}
+  tbody tr:hover{background:var(--paper);}
+  td.num{font-family:var(--mono);font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap;}
+  td.small{color:var(--muted);font-size:12px;max-width:280px;}
+  .badge{font-family:var(--mono);font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;padding:2px 7px;border-radius:3px;display:inline-block;white-space:nowrap;}
+  .badge.sig{background:var(--sig-soft);color:var(--sig);}
+  .badge.cemei{background:var(--cemei-soft);color:var(--cemei);}
+  .cat-pill{font-size:11px;color:var(--muted);background:var(--paper);border:1px solid var(--paper-line);padding:2px 7px;border-radius:3px;display:inline-block;white-space:nowrap;}
 
-  .table-scroll{ max-height:520px; overflow:auto; border:1px solid var(--paper-line); }
-  .table-scroll table{ border:none; }
+  .table-scroll{max-height:540px;overflow:auto;border:1px solid var(--paper-line);}
+  .table-scroll table{border:none;}
 
-  footer{ margin-top:48px; padding-top:18px; border-top:1px solid var(--paper-line); font-family:var(--mono); font-size:11px; color:var(--muted); text-align:center; }
+  /* TABLA CATEGORÍAS */
+  .cat-table{width:100%;border-collapse:collapse;}
+  .cat-table th{text-align:left;font-size:10.5px;text-transform:uppercase;letter-spacing:0.05em;color:var(--muted);font-weight:600;padding:10px 12px;border-bottom:2px solid var(--ink);}
+  .cat-table td{padding:9px 12px;border-bottom:1px solid var(--paper-line);font-size:13px;}
+  .cat-table tr.cat-header td{font-weight:600;background:var(--paper);font-size:12px;}
+  .cat-table tr.sub-header td{padding-left:24px;color:var(--muted);}
+  .cat-table .num{font-family:var(--mono);text-align:right;font-variant-numeric:tabular-nums;}
+  .cat-table tr.total-row td{font-weight:700;border-top:2px solid var(--ink);padding-top:12px;}
 
-  @media (max-width:640px){
-    .masthead-title{ font-size:26px; }
-    .summary .card .value{ font-size:21px; }
-  }
+  footer{margin-top:40px;padding-top:16px;border-top:1px solid var(--paper-line);font-family:var(--mono);font-size:10.5px;color:var(--muted);text-align:center;}
 </style>
 </head>
 <body>
@@ -131,15 +96,29 @@
 
   <div class="filters">
     <div class="field">
-      <label for="desde">Fecha desde</label>
+      <label>Fecha desde</label>
       <input type="date" id="desde" />
     </div>
     <div class="field">
-      <label for="hasta">Fecha hasta</label>
+      <label>Fecha hasta</label>
       <input type="date" id="hasta" />
     </div>
-    <div class="field" style="min-width:260px;">
-      <label for="backendUrl">URL del backend</label>
+    <div class="field">
+      <label>Empresa</label>
+      <select id="filtroEmpresa">
+        <option value="">Todas</option>
+        <option value="SIG">Salud Integral (SIG)</option>
+        <option value="CEMEI">SIG Clínica (CEMEI)</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>Categoría</label>
+      <select id="filtroCategoria">
+        <option value="">Todas</option>
+      </select>
+    </div>
+    <div class="field" style="min-width:240px;">
+      <label>URL del backend</label>
       <input type="text" id="backendUrl" placeholder="https://tu-backend.onrender.com" />
     </div>
     <button id="btnBuscar">Consultar</button>
@@ -150,8 +129,18 @@
   <div class="summary" id="summary"></div>
 
   <section class="block">
-    <div class="block-title">Importe por rubro <span class="n" id="rubroN"></span></div>
-    <div class="chart-card"><canvas id="chartRubro"></canvas></div>
+    <div class="block-title">Importe por categoría <span class="n" id="catN"></span></div>
+    <div class="chart-card"><canvas id="chartCat"></canvas></div>
+  </section>
+
+  <section class="block">
+    <div class="block-title">Resumen por categoría y subcategoría</div>
+    <div class="table-scroll">
+      <table class="cat-table">
+        <thead><tr><th>Categoría / Subcategoría</th><th class="num">Importe</th><th class="num">Pagos</th></tr></thead>
+        <tbody id="tbodyCat"></tbody>
+      </table>
+    </div>
   </section>
 
   <section class="block">
@@ -161,8 +150,9 @@
         <thead>
           <tr>
             <th>Fecha</th>
-            <th>Origen</th>
+            <th>Empresa</th>
             <th>Proveedor</th>
+            <th>Subcategoría</th>
             <th>Rubro</th>
             <th class="num">Importe</th>
             <th>Concepto</th>
@@ -177,160 +167,160 @@
 </div>
 
 <script>
-const $ = (sel) => document.querySelector(sel);
-let chartRubro = null;
+let chartCat = null;
+let pagosBrutos = [];
 
 function hoyISO(){ return new Date().toISOString().slice(0,10); }
-function primerDiaDeMesISO(){
-  const d = new Date();
-  return new Date(d.getFullYear(), d.getMonth(), 1).toISOString().slice(0,10);
+function primerDiaMes(){ const d=new Date(); return new Date(d.getFullYear(),d.getMonth(),1).toISOString().slice(0,10); }
+function formatARS(n){ return new Intl.NumberFormat('es-AR',{style:'currency',currency:'ARS',maximumFractionDigits:0}).format(n||0); }
+function formatFecha(iso){ if(!iso) return '—'; const [y,m,d]=iso.split('-'); return `${d}/${m}/${y}`; }
+function esc(s){ return String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+function filtrarPagos(pagos){
+  const emp = document.getElementById('filtroEmpresa').value;
+  const cat = document.getElementById('filtroCategoria').value;
+  return pagos.filter(p => {
+    const esCemei = p.origen.includes('CEMEI');
+    if (emp === 'SIG' && esCemei) return false;
+    if (emp === 'CEMEI' && !esCemei) return false;
+    if (cat && p.categoria !== cat) return false;
+    return true;
+  });
 }
 
-function formatARS(numero){
-  return new Intl.NumberFormat('es-AR', { style:'currency', currency:'ARS', maximumFractionDigits:0 }).format(numero || 0);
+function poblarFiltroCategoria(pagos){
+  const cats = [...new Set(pagos.map(p=>p.categoria))].sort();
+  const sel = document.getElementById('filtroCategoria');
+  const valActual = sel.value;
+  sel.innerHTML = '<option value="">Todas</option>';
+  cats.forEach(c => {
+    const o = document.createElement('option');
+    o.value = c; o.textContent = c;
+    if (c === valActual) o.selected = true;
+    sel.appendChild(o);
+  });
 }
-function formatFechaCorta(iso){
-  if(!iso) return '—';
-  const [y,m,d] = iso.split('-');
-  return `${d}/${m}/${y}`;
-}
-
-// Recordar la URL del backend entre sesiones (en memoria de la pestaña, no localStorage)
-let backendUrlGuardada = '';
 
 async function consultar(){
-  const desde = $('#desde').value;
-  const hasta = $('#hasta').value;
-  const backendUrl = $('#backendUrl').value.trim().replace(/\/$/, '');
-  const estado = $('#estado');
-
-  if(!backendUrl){
-    estado.textContent = 'Ingresá la URL de tu backend (por ejemplo, https://tu-backend.onrender.com).';
-    estado.classList.add('error');
-    return;
-  }
-  if(!desde){
-    estado.textContent = 'La fecha "desde" es obligatoria.';
-    estado.classList.add('error');
-    return;
-  }
-
-  backendUrlGuardada = backendUrl;
-  estado.classList.remove('error');
-  estado.textContent = 'Consultando…';
-
+  const desde = document.getElementById('desde').value;
+  const hasta = document.getElementById('hasta').value;
+  const backendUrl = document.getElementById('backendUrl').value.trim().replace(/\/$/,'');
+  const estado = document.getElementById('estado');
+  if(!backendUrl){ estado.textContent='Ingresá la URL del backend.'; estado.className='estado error'; return; }
+  if(!desde){ estado.textContent='La fecha "desde" es obligatoria.'; estado.className='estado error'; return; }
+  estado.className='estado'; estado.textContent='Consultando…';
   try{
-    const url = `${backendUrl}/api/pagos?desde=${desde}&hasta=${hasta || desde}`;
-    const resp = await fetch(url);
-    if(!resp.ok){
-      const errJson = await resp.json().catch(()=>({}));
-      throw new Error(errJson.error || `Error HTTP ${resp.status}`);
-    }
-    const data = await resp.json();
-    estado.textContent = `${data.total} pagos encontrados.`;
-    $('#stampFecha').textContent = `Actualizado: ${new Date().toLocaleString('es-AR')}`;
-    render(data.pagos);
+    const url=`${backendUrl}/api/pagos?desde=${desde}&hasta=${hasta||desde}`;
+    const resp=await fetch(url);
+    if(!resp.ok){ const e=await resp.json().catch(()=>({})); throw new Error(e.error||`HTTP ${resp.status}`); }
+    const data=await resp.json();
+    pagosBrutos=data.pagos;
+    poblarFiltroCategoria(pagosBrutos);
+    estado.textContent=`${data.total} pagos encontrados.`;
+    document.getElementById('stampFecha').textContent=`Actualizado: ${new Date().toLocaleString('es-AR')}`;
+    render();
   }catch(err){
-    estado.classList.add('error');
-    estado.textContent = `No se pudo consultar el backend: ${err.message}`;
+    estado.className='estado error';
+    estado.textContent=`No se pudo consultar: ${err.message}`;
     render([]);
   }
 }
 
-function render(pagos){
+function render(){
+  const pagos = filtrarPagos(pagosBrutos);
   renderSummary(pagos);
-  renderChartRubro(pagos);
+  renderChartCategoria(pagos);
+  renderTablaCategorias(pagos);
   renderTabla(pagos);
 }
 
 function renderSummary(pagos){
-  const total = pagos.reduce((a,p)=>a+(p.importe||0),0);
-  const sig = pagos.filter(p=>p.origen.includes('Salud Integral'));
-  const cemei = pagos.filter(p=>p.origen.includes('CEMEI'));
-  const totalSig = sig.reduce((a,p)=>a+(p.importe||0),0);
-  const totalCemei = cemei.reduce((a,p)=>a+(p.importe||0),0);
-
-  $('#summary').innerHTML = `
-    <div class="card">
-      <div class="label">Total general</div>
-      <div class="value">${formatARS(total)}</div>
-    </div>
-    <div class="card sig">
-      <div class="label">Salud Integral</div>
-      <div class="value">${formatARS(totalSig)}</div>
-    </div>
-    <div class="card cemei">
-      <div class="label">CEMEI</div>
-      <div class="value">${formatARS(totalCemei)}</div>
-    </div>
-    <div class="card">
-      <div class="label">Cantidad de pagos</div>
-      <div class="value">${pagos.length}</div>
-    </div>
-  `;
+  const total=pagos.reduce((a,p)=>a+(p.importe||0),0);
+  const sig=pagos.filter(p=>!p.origen.includes('CEMEI')).reduce((a,p)=>a+(p.importe||0),0);
+  const cemei=pagos.filter(p=>p.origen.includes('CEMEI')).reduce((a,p)=>a+(p.importe||0),0);
+  document.getElementById('summary').innerHTML=`
+    <div class="card"><div class="label">Total general</div><div class="value">${formatARS(total)}</div></div>
+    <div class="card sig"><div class="label">Salud Integral</div><div class="value">${formatARS(sig)}</div></div>
+    <div class="card cemei"><div class="label">CEMEI</div><div class="value">${formatARS(cemei)}</div></div>
+    <div class="card"><div class="label">Cantidad de pagos</div><div class="value">${pagos.length}</div></div>`;
 }
 
-function renderChartRubro(pagos){
-  const porRubro = {};
+function renderChartCategoria(pagos){
+  const porCat={};
   pagos.forEach(p=>{
-    const r = p.rubro || 'Sin rubro';
-    porRubro[r] = (porRubro[r]||0) + (p.importe||0);
+    const c=p.categoria||'Sin clasificar';
+    porCat[c]=(porCat[c]||0)+(p.importe||0);
   });
-  const entradas = Object.entries(porRubro).sort((a,b)=>b[1]-a[1]).slice(0,12);
-  $('#rubroN').textContent = `(${Object.keys(porRubro).length} rubros)`;
-
-  const ctx = document.getElementById('chartRubro').getContext('2d');
-  if(chartRubro) chartRubro.destroy();
-  chartRubro = new Chart(ctx, {
-    type: 'bar',
-    data: {
-      labels: entradas.map(e=>e[0]),
-      datasets: [{
-        data: entradas.map(e=>e[1]),
-        backgroundColor: '#0F6657',
-        borderRadius: 2,
-        maxBarThickness: 28,
-      }]
+  const entradas=Object.entries(porCat).sort((a,b)=>b[1]-a[1]);
+  document.getElementById('catN').textContent=`(${entradas.length} categorías)`;
+  const COLORES=['#0F6657','#B5563C','#2E5E8E','#7A5E2E','#5E2E6B','#2E6B5E'];
+  const ctx=document.getElementById('chartCat').getContext('2d');
+  if(chartCat) chartCat.destroy();
+  chartCat=new Chart(ctx,{
+    type:'bar',
+    data:{
+      labels:entradas.map(e=>e[0]),
+      datasets:[{data:entradas.map(e=>e[1]),backgroundColor:entradas.map((_,i)=>COLORES[i%COLORES.length]),borderRadius:2,maxBarThickness:32}]
     },
-    options: {
-      indexAxis: 'y',
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: { legend: { display:false },
-        tooltip: { callbacks: { label: (c)=> formatARS(c.parsed.x) } } },
-      scales: {
-        x: { ticks: { callback:(v)=>formatARS(v), font:{family:'IBM Plex Mono', size:10} }, grid:{ color:'#EFEAE0' } },
-        y: { ticks: { font:{family:'Inter', size:11} }, grid:{ display:false } }
+    options:{
+      indexAxis:'y',responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>formatARS(c.parsed.x)}}},
+      scales:{
+        x:{ticks:{callback:v=>formatARS(v),font:{family:'IBM Plex Mono',size:10}},grid:{color:'#EFEAE0'}},
+        y:{ticks:{font:{family:'Inter',size:11}},grid:{display:false}}
       }
     }
   });
 }
 
+function renderTablaCategorias(pagos){
+  // Agrupar por categoria > subcategoria
+  const arbol={};
+  pagos.forEach(p=>{
+    const cat=p.categoria||'Sin clasificar';
+    const sub=p.subcategoria||'Sin subcategoría';
+    if(!arbol[cat]) arbol[cat]={total:0,subs:{}};
+    arbol[cat].total+=(p.importe||0);
+    if(!arbol[cat].subs[sub]) arbol[cat].subs[sub]={total:0,count:0};
+    arbol[cat].subs[sub].total+=(p.importe||0);
+    arbol[cat].subs[sub].count++;
+  });
+  const totalGeneral=pagos.reduce((a,p)=>a+(p.importe||0),0);
+  let html='';
+  Object.entries(arbol).sort((a,b)=>b[1].total-a[1].total).forEach(([cat,datos])=>{
+    html+=`<tr class="cat-header"><td>${esc(cat)}</td><td class="num">${formatARS(datos.total)}</td><td class="num">${Object.values(datos.subs).reduce((a,s)=>a+s.count,0)}</td></tr>`;
+    Object.entries(datos.subs).sort((a,b)=>b[1].total-a[1].total).forEach(([sub,s])=>{
+      html+=`<tr class="sub-header"><td style="padding-left:24px">${esc(sub)}</td><td class="num" style="color:var(--muted)">${formatARS(s.total)}</td><td class="num" style="color:var(--muted)">${s.count}</td></tr>`;
+    });
+  });
+  html+=`<tr class="total-row"><td><strong>TOTAL</strong></td><td class="num">${formatARS(totalGeneral)}</td><td class="num">${pagos.length}</td></tr>`;
+  document.getElementById('tbodyCat').innerHTML=html;
+}
+
 function renderTabla(pagos){
-  $('#tablaN').textContent = `(${pagos.length})`;
-  const ordenado = [...pagos].sort((a,b)=> (b.fechaCobro||'').localeCompare(a.fechaCobro||''));
-  $('#tbodyPagos').innerHTML = ordenado.map(p=>{
-    const esCemei = p.origen.includes('CEMEI');
-    return `
-      <tr>
-        <td>${formatFechaCorta(p.fechaCobro)}</td>
-        <td><span class="badge ${esCemei?'cemei':'sig'}">${esCemei?'CEMEI':'SIG'}</span></td>
-        <td>${escapeHtml(p.proveedor||'')}</td>
-        <td>${escapeHtml(p.rubro||'')}</td>
-        <td class="num">${formatARS(p.importe)}</td>
-        <td class="concepto">${escapeHtml(p.concepto||'')}</td>
-      </tr>`;
+  document.getElementById('tablaN').textContent=`(${pagos.length})`;
+  const ord=[...pagos].sort((a,b)=>(b.fechaCobro||'').localeCompare(a.fechaCobro||''));
+  document.getElementById('tbodyPagos').innerHTML=ord.map(p=>{
+    const esCemei=p.origen.includes('CEMEI');
+    return `<tr>
+      <td>${formatFecha(p.fechaCobro)}</td>
+      <td><span class="badge ${esCemei?'cemei':'sig'}">${esCemei?'CEMEI':'SIG'}</span></td>
+      <td>${esc(p.proveedor)}</td>
+      <td><span class="cat-pill">${esc(p.subcategoria||'—')}</span></td>
+      <td style="color:var(--muted);font-size:12px">${esc(p.rubro)}</td>
+      <td class="num">${formatARS(p.importe)}</td>
+      <td class="small">${esc(p.concepto)}</td>
+    </tr>`;
   }).join('');
 }
 
-function escapeHtml(str){
-  return String(str).replace(/[&<>"']/g, (c)=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-}
+// Aplicar filtros sin re-consultar
+document.getElementById('filtroEmpresa').addEventListener('change', ()=>{ if(pagosBrutos.length) render(); });
+document.getElementById('filtroCategoria').addEventListener('change', ()=>{ if(pagosBrutos.length) render(); });
 
-// Valores iniciales: mes actual
-$('#desde').value = primerDiaDeMesISO();
-$('#hasta').value = hoyISO();
-$('#btnBuscar').addEventListener('click', consultar);
+document.getElementById('desde').value=primerDiaMes();
+document.getElementById('hasta').value=hoyISO();
+document.getElementById('btnBuscar').addEventListener('click', consultar);
 </script>
 </body>
 </html>
