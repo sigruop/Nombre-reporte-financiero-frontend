@@ -19,66 +19,49 @@
   }
   *{box-sizing:border-box;}
   body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);-webkit-font-smoothing:antialiased;}
-  .wrap{max-width:1140px;margin:0 auto;padding:40px 24px 80px;}
+  .wrap{max-width:1100px;margin:0 auto;padding:40px 24px 80px;}
 
-  /* MASTHEAD */
   header.masthead{border-bottom:2px solid var(--ink);padding-bottom:18px;margin-bottom:28px;display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:12px;}
   .masthead-title{font-family:var(--display);font-weight:600;font-size:32px;letter-spacing:-0.01em;}
   .masthead-sub{font-family:var(--mono);font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;margin-top:4px;}
   .masthead-stamp{font-family:var(--mono);font-size:11px;color:var(--muted);text-align:right;line-height:1.7;}
 
-  /* FILTROS */
   .filters{display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap;background:#fff;border:1px solid var(--paper-line);border-radius:4px;padding:16px 18px;margin-bottom:22px;}
   .field{display:flex;flex-direction:column;gap:5px;}
   .field label{font-size:10.5px;text-transform:uppercase;letter-spacing:0.06em;color:var(--muted);font-weight:600;}
-  .field input,.field select{font-family:var(--mono);font-size:13px;border:1px solid var(--paper-line);border-radius:3px;padding:7px 10px;background:var(--paper);color:var(--ink);min-width:140px;}
-  .field select{cursor:pointer;}
+  .field input,.field select{font-family:var(--mono);font-size:13px;border:1px solid var(--paper-line);border-radius:3px;padding:7px 10px;background:var(--paper);color:var(--ink);}
+  .field input{min-width:148px;}
+  .field select{min-width:180px;cursor:pointer;}
   .field input:focus,.field select:focus{outline:2px solid var(--ink);outline-offset:1px;}
-  button#btnBuscar{font-family:var(--sans);font-weight:600;font-size:13px;background:var(--ink);color:var(--paper);border:none;border-radius:3px;padding:9px 20px;cursor:pointer;white-space:nowrap;}
+  button#btnBuscar{font-family:var(--sans);font-weight:600;font-size:13px;background:var(--ink);color:var(--paper);border:none;border-radius:3px;padding:9px 20px;cursor:pointer;}
   button#btnBuscar:hover{background:#0e1a20;}
 
   .estado{font-family:var(--mono);font-size:12px;color:var(--muted);margin:-8px 0 20px;min-height:16px;}
   .estado.error{color:var(--cemei);}
 
-  /* CARDS */
   .summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1px;background:var(--paper-line);border:1px solid var(--paper-line);margin-bottom:32px;}
   .summary .card{background:#fff;padding:18px 20px;}
   .summary .card .label{font-size:10.5px;text-transform:uppercase;letter-spacing:0.06em;color:var(--muted);font-weight:600;margin-bottom:8px;}
-  .summary .card .value{font-family:var(--mono);font-size:22px;font-weight:600;font-variant-numeric:tabular-nums;line-height:1.2;}
+  .summary .card .value{font-family:var(--mono);font-size:22px;font-weight:600;font-variant-numeric:tabular-nums;}
   .summary .card.sig .value{color:var(--sig);}
   .summary .card.cemei .value{color:var(--cemei);}
 
-  /* SECCIONES */
   section.block{margin-bottom:36px;}
   .block-title{font-family:var(--display);font-size:19px;font-weight:600;display:flex;align-items:baseline;gap:8px;margin-bottom:14px;}
   .block-title .n{font-family:var(--mono);font-size:11px;color:var(--muted);}
-
-  /* CHART */
   .chart-card{background:#fff;border:1px solid var(--paper-line);border-radius:4px;padding:22px;height:360px;}
 
-  /* TABLA */
-  table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--paper-line);}
+  table{width:100%;border-collapse:collapse;background:#fff;}
   thead th{text-align:left;font-size:10.5px;text-transform:uppercase;letter-spacing:0.05em;color:var(--muted);font-weight:600;padding:11px 12px;border-bottom:2px solid var(--ink);position:sticky;top:0;background:#fff;white-space:nowrap;}
   tbody td{padding:10px 12px;border-bottom:1px solid var(--paper-line);font-size:13px;vertical-align:top;}
   tbody tr:hover{background:var(--paper);}
   td.num{font-family:var(--mono);font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap;}
-  td.small{color:var(--muted);font-size:12px;max-width:280px;}
-  .badge{font-family:var(--mono);font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;padding:2px 7px;border-radius:3px;display:inline-block;white-space:nowrap;}
+  td.small{color:var(--muted);font-size:12px;max-width:300px;}
+  .badge{font-family:var(--mono);font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;padding:2px 7px;border-radius:3px;display:inline-block;}
   .badge.sig{background:var(--sig-soft);color:var(--sig);}
   .badge.cemei{background:var(--cemei-soft);color:var(--cemei);}
-  .cat-pill{font-size:11px;color:var(--muted);background:var(--paper);border:1px solid var(--paper-line);padding:2px 7px;border-radius:3px;display:inline-block;white-space:nowrap;}
-
   .table-scroll{max-height:540px;overflow:auto;border:1px solid var(--paper-line);}
   .table-scroll table{border:none;}
-
-  /* TABLA CATEGORÍAS */
-  .cat-table{width:100%;border-collapse:collapse;}
-  .cat-table th{text-align:left;font-size:10.5px;text-transform:uppercase;letter-spacing:0.05em;color:var(--muted);font-weight:600;padding:10px 12px;border-bottom:2px solid var(--ink);}
-  .cat-table td{padding:9px 12px;border-bottom:1px solid var(--paper-line);font-size:13px;}
-  .cat-table tr.cat-header td{font-weight:600;background:var(--paper);font-size:12px;}
-  .cat-table tr.sub-header td{padding-left:24px;color:var(--muted);}
-  .cat-table .num{font-family:var(--mono);text-align:right;font-variant-numeric:tabular-nums;}
-  .cat-table tr.total-row td{font-weight:700;border-top:2px solid var(--ink);padding-top:12px;}
 
   footer{margin-top:40px;padding-top:16px;border-top:1px solid var(--paper-line);font-family:var(--mono);font-size:10.5px;color:var(--muted);text-align:center;}
 </style>
@@ -106,15 +89,9 @@
     <div class="field">
       <label>Empresa</label>
       <select id="filtroEmpresa">
-        <option value="">Todas</option>
-        <option value="SIG">Salud Integral (SIG)</option>
-        <option value="CEMEI">SIG Clínica (CEMEI)</option>
-      </select>
-    </div>
-    <div class="field">
-      <label>Categoría</label>
-      <select id="filtroCategoria">
-        <option value="">Todas</option>
+        <option value="">Salud Integral + CEMEI</option>
+        <option value="SIG">Solo Salud Integral (SIG)</option>
+        <option value="CEMEI">Solo SIG Clínica (CEMEI)</option>
       </select>
     </div>
     <div class="field" style="min-width:240px;">
@@ -125,22 +102,11 @@
   </div>
 
   <div class="estado" id="estado"></div>
-
   <div class="summary" id="summary"></div>
 
   <section class="block">
-    <div class="block-title">Importe por categoría <span class="n" id="catN"></span></div>
-    <div class="chart-card"><canvas id="chartCat"></canvas></div>
-  </section>
-
-  <section class="block">
-    <div class="block-title">Resumen por categoría y subcategoría</div>
-    <div class="table-scroll">
-      <table class="cat-table">
-        <thead><tr><th>Categoría / Subcategoría</th><th class="num">Importe</th><th class="num">Pagos</th></tr></thead>
-        <tbody id="tbodyCat"></tbody>
-      </table>
-    </div>
+    <div class="block-title">Importe por rubro <span class="n" id="rubroN"></span></div>
+    <div class="chart-card"><canvas id="chartRubro"></canvas></div>
   </section>
 
   <section class="block">
@@ -152,7 +118,6 @@
             <th>Fecha</th>
             <th>Empresa</th>
             <th>Proveedor</th>
-            <th>Subcategoría</th>
             <th>Rubro</th>
             <th class="num">Importe</th>
             <th>Concepto</th>
@@ -167,7 +132,7 @@
 </div>
 
 <script>
-let chartCat = null;
+let chartRubro = null;
 let pagosBrutos = [];
 
 function hoyISO(){ return new Date().toISOString().slice(0,10); }
@@ -178,26 +143,12 @@ function esc(s){ return String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&
 
 function filtrarPagos(pagos){
   const emp = document.getElementById('filtroEmpresa').value;
-  const cat = document.getElementById('filtroCategoria').value;
+  if(!emp) return pagos;
   return pagos.filter(p => {
     const esCemei = p.origen.includes('CEMEI');
-    if (emp === 'SIG' && esCemei) return false;
-    if (emp === 'CEMEI' && !esCemei) return false;
-    if (cat && p.categoria !== cat) return false;
+    if(emp === 'SIG') return !esCemei;
+    if(emp === 'CEMEI') return esCemei;
     return true;
-  });
-}
-
-function poblarFiltroCategoria(pagos){
-  const cats = [...new Set(pagos.map(p=>p.categoria))].sort();
-  const sel = document.getElementById('filtroCategoria');
-  const valActual = sel.value;
-  sel.innerHTML = '<option value="">Todas</option>';
-  cats.forEach(c => {
-    const o = document.createElement('option');
-    o.value = c; o.textContent = c;
-    if (c === valActual) o.selected = true;
-    sel.appendChild(o);
   });
 }
 
@@ -210,34 +161,30 @@ async function consultar(){
   if(!desde){ estado.textContent='La fecha "desde" es obligatoria.'; estado.className='estado error'; return; }
   estado.className='estado'; estado.textContent='Consultando…';
   try{
-    const url=`${backendUrl}/api/pagos?desde=${desde}&hasta=${hasta||desde}`;
-    const resp=await fetch(url);
+    const resp = await fetch(`${backendUrl}/api/pagos?desde=${desde}&hasta=${hasta||desde}`);
     if(!resp.ok){ const e=await resp.json().catch(()=>({})); throw new Error(e.error||`HTTP ${resp.status}`); }
-    const data=await resp.json();
-    pagosBrutos=data.pagos;
-    poblarFiltroCategoria(pagosBrutos);
+    const data = await resp.json();
+    pagosBrutos = data.pagos;
     estado.textContent=`${data.total} pagos encontrados.`;
     document.getElementById('stampFecha').textContent=`Actualizado: ${new Date().toLocaleString('es-AR')}`;
     render();
   }catch(err){
     estado.className='estado error';
     estado.textContent=`No se pudo consultar: ${err.message}`;
-    render([]);
   }
 }
 
 function render(){
   const pagos = filtrarPagos(pagosBrutos);
   renderSummary(pagos);
-  renderChartCategoria(pagos);
-  renderTablaCategorias(pagos);
+  renderChart(pagos);
   renderTabla(pagos);
 }
 
 function renderSummary(pagos){
-  const total=pagos.reduce((a,p)=>a+(p.importe||0),0);
-  const sig=pagos.filter(p=>!p.origen.includes('CEMEI')).reduce((a,p)=>a+(p.importe||0),0);
-  const cemei=pagos.filter(p=>p.origen.includes('CEMEI')).reduce((a,p)=>a+(p.importe||0),0);
+  const total = pagos.reduce((a,p)=>a+(p.importe||0),0);
+  const sig   = pagos.filter(p=>!p.origen.includes('CEMEI')).reduce((a,p)=>a+(p.importe||0),0);
+  const cemei = pagos.filter(p=>p.origen.includes('CEMEI')).reduce((a,p)=>a+(p.importe||0),0);
   document.getElementById('summary').innerHTML=`
     <div class="card"><div class="label">Total general</div><div class="value">${formatARS(total)}</div></div>
     <div class="card sig"><div class="label">Salud Integral</div><div class="value">${formatARS(sig)}</div></div>
@@ -245,22 +192,18 @@ function renderSummary(pagos){
     <div class="card"><div class="label">Cantidad de pagos</div><div class="value">${pagos.length}</div></div>`;
 }
 
-function renderChartCategoria(pagos){
-  const porCat={};
-  pagos.forEach(p=>{
-    const c=p.categoria||'Sin clasificar';
-    porCat[c]=(porCat[c]||0)+(p.importe||0);
-  });
-  const entradas=Object.entries(porCat).sort((a,b)=>b[1]-a[1]);
-  document.getElementById('catN').textContent=`(${entradas.length} categorías)`;
-  const COLORES=['#0F6657','#B5563C','#2E5E8E','#7A5E2E','#5E2E6B','#2E6B5E'];
-  const ctx=document.getElementById('chartCat').getContext('2d');
-  if(chartCat) chartCat.destroy();
-  chartCat=new Chart(ctx,{
+function renderChart(pagos){
+  const porRubro={};
+  pagos.forEach(p=>{ const r=p.rubro||'Sin rubro'; porRubro[r]=(porRubro[r]||0)+(p.importe||0); });
+  const entradas=Object.entries(porRubro).sort((a,b)=>b[1]-a[1]).slice(0,14);
+  document.getElementById('rubroN').textContent=`(${Object.keys(porRubro).length} rubros)`;
+  const ctx=document.getElementById('chartRubro').getContext('2d');
+  if(chartRubro) chartRubro.destroy();
+  chartRubro=new Chart(ctx,{
     type:'bar',
     data:{
       labels:entradas.map(e=>e[0]),
-      datasets:[{data:entradas.map(e=>e[1]),backgroundColor:entradas.map((_,i)=>COLORES[i%COLORES.length]),borderRadius:2,maxBarThickness:32}]
+      datasets:[{data:entradas.map(e=>e[1]),backgroundColor:'#0F6657',borderRadius:2,maxBarThickness:28}]
     },
     options:{
       indexAxis:'y',responsive:true,maintainAspectRatio:false,
@@ -273,30 +216,6 @@ function renderChartCategoria(pagos){
   });
 }
 
-function renderTablaCategorias(pagos){
-  // Agrupar por categoria > subcategoria
-  const arbol={};
-  pagos.forEach(p=>{
-    const cat=p.categoria||'Sin clasificar';
-    const sub=p.subcategoria||'Sin subcategoría';
-    if(!arbol[cat]) arbol[cat]={total:0,subs:{}};
-    arbol[cat].total+=(p.importe||0);
-    if(!arbol[cat].subs[sub]) arbol[cat].subs[sub]={total:0,count:0};
-    arbol[cat].subs[sub].total+=(p.importe||0);
-    arbol[cat].subs[sub].count++;
-  });
-  const totalGeneral=pagos.reduce((a,p)=>a+(p.importe||0),0);
-  let html='';
-  Object.entries(arbol).sort((a,b)=>b[1].total-a[1].total).forEach(([cat,datos])=>{
-    html+=`<tr class="cat-header"><td>${esc(cat)}</td><td class="num">${formatARS(datos.total)}</td><td class="num">${Object.values(datos.subs).reduce((a,s)=>a+s.count,0)}</td></tr>`;
-    Object.entries(datos.subs).sort((a,b)=>b[1].total-a[1].total).forEach(([sub,s])=>{
-      html+=`<tr class="sub-header"><td style="padding-left:24px">${esc(sub)}</td><td class="num" style="color:var(--muted)">${formatARS(s.total)}</td><td class="num" style="color:var(--muted)">${s.count}</td></tr>`;
-    });
-  });
-  html+=`<tr class="total-row"><td><strong>TOTAL</strong></td><td class="num">${formatARS(totalGeneral)}</td><td class="num">${pagos.length}</td></tr>`;
-  document.getElementById('tbodyCat').innerHTML=html;
-}
-
 function renderTabla(pagos){
   document.getElementById('tablaN').textContent=`(${pagos.length})`;
   const ord=[...pagos].sort((a,b)=>(b.fechaCobro||'').localeCompare(a.fechaCobro||''));
@@ -306,20 +225,18 @@ function renderTabla(pagos){
       <td>${formatFecha(p.fechaCobro)}</td>
       <td><span class="badge ${esCemei?'cemei':'sig'}">${esCemei?'CEMEI':'SIG'}</span></td>
       <td>${esc(p.proveedor)}</td>
-      <td><span class="cat-pill">${esc(p.subcategoria||'—')}</span></td>
-      <td style="color:var(--muted);font-size:12px">${esc(p.rubro)}</td>
+      <td>${esc(p.rubro)}</td>
       <td class="num">${formatARS(p.importe)}</td>
       <td class="small">${esc(p.concepto)}</td>
     </tr>`;
   }).join('');
 }
 
-// Aplicar filtros sin re-consultar
+// El filtro de empresa filtra en tiempo real sin re-consultar
 document.getElementById('filtroEmpresa').addEventListener('change', ()=>{ if(pagosBrutos.length) render(); });
-document.getElementById('filtroCategoria').addEventListener('change', ()=>{ if(pagosBrutos.length) render(); });
 
-document.getElementById('desde').value=primerDiaMes();
-document.getElementById('hasta').value=hoyISO();
+document.getElementById('desde').value = primerDiaMes();
+document.getElementById('hasta').value = hoyISO();
 document.getElementById('btnBuscar').addEventListener('click', consultar);
 </script>
 </body>
