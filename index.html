@@ -12,6 +12,7 @@
     --ink:#1C2B33; --paper:#F7F5F0; --paper-line:#DAD4C6;
     --sig:#0F6657; --sig-soft:#E4F0EC;
     --cemei:#B5563C; --cemei-soft:#F6E8E2;
+    --neo:#2E5E8E; --neo-soft:#E2ECF6;
     --muted:#6B6458;
     --display:'Source Serif 4',Georgia,serif;
     --mono:'IBM Plex Mono',ui-monospace,SFMono-Regular,monospace;
@@ -39,12 +40,13 @@
   .estado{font-family:var(--mono);font-size:12px;color:var(--muted);margin:-8px 0 20px;min-height:16px;}
   .estado.error{color:var(--cemei);}
 
-  .summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1px;background:var(--paper-line);border:1px solid var(--paper-line);margin-bottom:32px;}
+  .summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:1px;background:var(--paper-line);border:1px solid var(--paper-line);margin-bottom:32px;}
   .summary .card{background:#fff;padding:18px 20px;}
   .summary .card .label{font-size:10.5px;text-transform:uppercase;letter-spacing:0.06em;color:var(--muted);font-weight:600;margin-bottom:8px;}
-  .summary .card .value{font-family:var(--mono);font-size:22px;font-weight:600;font-variant-numeric:tabular-nums;}
+  .summary .card .value{font-family:var(--mono);font-size:20px;font-weight:600;font-variant-numeric:tabular-nums;}
   .summary .card.sig .value{color:var(--sig);}
   .summary .card.cemei .value{color:var(--cemei);}
+  .summary .card.neo .value{color:var(--neo);}
 
   section.block{margin-bottom:36px;}
   .block-title{font-family:var(--display);font-size:19px;font-weight:600;display:flex;align-items:baseline;gap:8px;margin-bottom:14px;}
@@ -60,6 +62,7 @@
   .badge{font-family:var(--mono);font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;padding:2px 7px;border-radius:3px;display:inline-block;}
   .badge.sig{background:var(--sig-soft);color:var(--sig);}
   .badge.cemei{background:var(--cemei-soft);color:var(--cemei);}
+  .badge.neo{background:var(--neo-soft);color:var(--neo);}
   .table-scroll{max-height:540px;overflow:auto;border:1px solid var(--paper-line);}
   .table-scroll table{border:none;}
 
@@ -72,7 +75,7 @@
   <header class="masthead">
     <div>
       <div class="masthead-title">Detalle de Pagos</div>
-      <div class="masthead-sub">Salud Integral · SIG Clínica (CEMEI)</div>
+      <div class="masthead-sub">Salud Integral · SIG Clínica (CEMEI) · Neoform</div>
     </div>
     <div class="masthead-stamp" id="stampFecha">Actualizado: —</div>
   </header>
@@ -89,9 +92,10 @@
     <div class="field">
       <label>Empresa</label>
       <select id="filtroEmpresa">
-        <option value="">Salud Integral + CEMEI</option>
+        <option value="">Todas las empresas</option>
         <option value="SIG">Solo Salud Integral (SIG)</option>
         <option value="CEMEI">Solo SIG Clínica (CEMEI)</option>
+        <option value="NEO">Solo Neoform</option>
       </select>
     </div>
     <div class="field" style="min-width:240px;">
@@ -141,15 +145,16 @@ function formatARS(n){ return new Intl.NumberFormat('es-AR',{style:'currency',cu
 function formatFecha(iso){ if(!iso) return '—'; const [y,m,d]=iso.split('-'); return `${d}/${m}/${y}`; }
 function esc(s){ return String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 
+function empresaKey(origen){
+  if(origen.includes('CEMEI')) return 'CEMEI';
+  if(origen.includes('Neoform')) return 'NEO';
+  return 'SIG';
+}
+
 function filtrarPagos(pagos){
   const emp = document.getElementById('filtroEmpresa').value;
   if(!emp) return pagos;
-  return pagos.filter(p => {
-    const esCemei = p.origen.includes('CEMEI');
-    if(emp === 'SIG') return !esCemei;
-    if(emp === 'CEMEI') return esCemei;
-    return true;
-  });
+  return pagos.filter(p => empresaKey(p.origen) === emp);
 }
 
 async function consultar(){
@@ -183,12 +188,14 @@ function render(){
 
 function renderSummary(pagos){
   const total = pagos.reduce((a,p)=>a+(p.importe||0),0);
-  const sig   = pagos.filter(p=>!p.origen.includes('CEMEI')).reduce((a,p)=>a+(p.importe||0),0);
-  const cemei = pagos.filter(p=>p.origen.includes('CEMEI')).reduce((a,p)=>a+(p.importe||0),0);
+  const sig   = pagos.filter(p=>empresaKey(p.origen)==='SIG').reduce((a,p)=>a+(p.importe||0),0);
+  const cemei = pagos.filter(p=>empresaKey(p.origen)==='CEMEI').reduce((a,p)=>a+(p.importe||0),0);
+  const neo   = pagos.filter(p=>empresaKey(p.origen)==='NEO').reduce((a,p)=>a+(p.importe||0),0);
   document.getElementById('summary').innerHTML=`
     <div class="card"><div class="label">Total general</div><div class="value">${formatARS(total)}</div></div>
     <div class="card sig"><div class="label">Salud Integral</div><div class="value">${formatARS(sig)}</div></div>
     <div class="card cemei"><div class="label">CEMEI</div><div class="value">${formatARS(cemei)}</div></div>
+    <div class="card neo"><div class="label">Neoform</div><div class="value">${formatARS(neo)}</div></div>
     <div class="card"><div class="label">Cantidad de pagos</div><div class="value">${pagos.length}</div></div>`;
 }
 
@@ -220,10 +227,11 @@ function renderTabla(pagos){
   document.getElementById('tablaN').textContent=`(${pagos.length})`;
   const ord=[...pagos].sort((a,b)=>(b.fechaCobro||'').localeCompare(a.fechaCobro||''));
   document.getElementById('tbodyPagos').innerHTML=ord.map(p=>{
-    const esCemei=p.origen.includes('CEMEI');
+    const key=empresaKey(p.origen);
+    const label=key==='CEMEI'?'CEMEI':key==='NEO'?'NEO':'SIG';
     return `<tr>
       <td>${formatFecha(p.fechaCobro)}</td>
-      <td><span class="badge ${esCemei?'cemei':'sig'}">${esCemei?'CEMEI':'SIG'}</span></td>
+      <td><span class="badge ${key.toLowerCase()}">${label}</span></td>
       <td>${esc(p.proveedor)}</td>
       <td>${esc(p.rubro)}</td>
       <td class="num">${formatARS(p.importe)}</td>
@@ -232,9 +240,7 @@ function renderTabla(pagos){
   }).join('');
 }
 
-// El filtro de empresa filtra en tiempo real sin re-consultar
 document.getElementById('filtroEmpresa').addEventListener('change', ()=>{ if(pagosBrutos.length) render(); });
-
 document.getElementById('desde').value = primerDiaMes();
 document.getElementById('hasta').value = hoyISO();
 document.getElementById('btnBuscar').addEventListener('click', consultar);
