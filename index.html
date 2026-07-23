@@ -1,358 +1,266 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Reporte Financiero — SOEM Group</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,500;8..60,600;8..60,700&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
-<style>
-  :root{
-    --ink:#1C2B33; --paper:#F7F5F0; --paper-line:#DAD4C6;
-    --sig:#0F6657; --sig-soft:#E4F0EC;
-    --cemei:#B5563C; --cemei-soft:#F6E8E2;
-    --neo:#2E5E8E; --neo-soft:#E2ECF6;
-    --farm:#7A5E2E; --farm-soft:#F5EFE0;
-    --muted:#6B6458;
-    --display:'Source Serif 4',Georgia,serif;
-    --mono:'IBM Plex Mono',ui-monospace,SFMono-Regular,monospace;
-    --sans:'Inter',system-ui,sans-serif;
-  }
-  *{box-sizing:border-box;}
-  body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);-webkit-font-smoothing:antialiased;}
-  .wrap{max-width:1140px;margin:0 auto;padding:32px 24px 80px;}
-  header.masthead{border-bottom:2px solid var(--ink);padding-bottom:16px;margin-bottom:24px;display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:12px;}
-  .masthead-title{font-family:var(--display);font-weight:600;font-size:30px;letter-spacing:-0.01em;}
-  .masthead-sub{font-family:var(--mono);font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;margin-top:4px;}
-  .masthead-stamp{font-family:var(--mono);font-size:11px;color:var(--muted);text-align:right;line-height:1.7;}
-  .tabs{display:flex;gap:0;margin-bottom:24px;border-bottom:2px solid var(--paper-line);}
-  .tab{font-family:var(--sans);font-size:13px;font-weight:600;padding:10px 24px;cursor:pointer;border:none;background:none;color:var(--muted);border-bottom:2px solid transparent;margin-bottom:-2px;}
-  .tab.active{color:var(--ink);border-bottom-color:var(--ink);}
-  .tab:hover:not(.active){color:var(--ink);}
-  .tab-panel{display:none;}
-  .tab-panel.active{display:block;}
-  .filters{display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap;background:#fff;border:1px solid var(--paper-line);border-radius:4px;padding:14px 16px;margin-bottom:20px;}
-  .field{display:flex;flex-direction:column;gap:5px;}
-  .field label{font-size:10.5px;text-transform:uppercase;letter-spacing:0.06em;color:var(--muted);font-weight:600;}
-  .field input,.field select{font-family:var(--mono);font-size:13px;border:1px solid var(--paper-line);border-radius:3px;padding:7px 10px;background:var(--paper);color:var(--ink);}
-  .field input{min-width:140px;}
-  .field select{min-width:165px;cursor:pointer;}
-  .field input:focus,.field select:focus{outline:2px solid var(--ink);outline-offset:1px;}
-  .btn{font-family:var(--sans);font-weight:600;font-size:13px;background:var(--ink);color:var(--paper);border:none;border-radius:3px;padding:9px 20px;cursor:pointer;}
-  .btn:hover{background:#0e1a20;}
-  .estado{font-family:var(--mono);font-size:12px;color:var(--muted);margin:-8px 0 18px;min-height:16px;}
-  .estado.error{color:var(--cemei);}
-  .summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1px;background:var(--paper-line);border:1px solid var(--paper-line);margin-bottom:28px;}
-  .summary .card{background:#fff;padding:16px 18px;}
-  .summary .card .label{font-size:10.5px;text-transform:uppercase;letter-spacing:0.06em;color:var(--muted);font-weight:600;margin-bottom:8px;}
-  .summary .card .value{font-family:var(--mono);font-size:19px;font-weight:600;font-variant-numeric:tabular-nums;}
-  .summary .card.sig .value{color:var(--sig);}
-  .summary .card.cemei .value{color:var(--cemei);}
-  .summary .card.neo .value{color:var(--neo);}
-  .summary .card.farm .value{color:var(--farm);}
-  section.block{margin-bottom:32px;}
-  .block-title{font-family:var(--display);font-size:18px;font-weight:600;display:flex;align-items:baseline;gap:8px;margin-bottom:12px;}
-  .block-title .n{font-family:var(--mono);font-size:11px;color:var(--muted);}
-  .chart-card{background:#fff;border:1px solid var(--paper-line);border-radius:4px;padding:20px;height:340px;}
-  table{width:100%;border-collapse:collapse;background:#fff;}
-  thead th{text-align:left;font-size:10.5px;text-transform:uppercase;letter-spacing:0.05em;color:var(--muted);font-weight:600;padding:10px 12px;border-bottom:2px solid var(--ink);position:sticky;top:0;background:#fff;white-space:nowrap;}
-  tbody td{padding:9px 12px;border-bottom:1px solid var(--paper-line);font-size:13px;vertical-align:top;}
-  tbody tr:hover{background:var(--paper);}
-  td.num{font-family:var(--mono);font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap;}
-  td.small{color:var(--muted);font-size:12px;max-width:280px;}
-  .badge{font-family:var(--mono);font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;padding:2px 7px;border-radius:3px;display:inline-block;white-space:nowrap;}
-  .badge.sig{background:var(--sig-soft);color:var(--sig);}
-  .badge.cemei{background:var(--cemei-soft);color:var(--cemei);}
-  .badge.neo{background:var(--neo-soft);color:var(--neo);}
-  .badge.farm{background:var(--farm-soft);color:var(--farm);}
-  .badge.odonto{background:#EDE8F5;color:#5B3E8E;}
-  .table-scroll{max-height:500px;overflow:auto;border:1px solid var(--paper-line);}
-  .table-scroll table{border:none;}
-  footer{margin-top:40px;padding-top:14px;border-top:1px solid var(--paper-line);font-family:var(--mono);font-size:10.5px;color:var(--muted);text-align:center;}
-</style>
-</head>
-<body>
-<div class="wrap">
-  <header class="masthead">
-    <div>
-      <div class="masthead-title">Reporte Financiero</div>
-      <div class="masthead-sub">Salud Integral · SIG Clínica (CEMEI) · Neoform</div>
-    </div>
-    <div class="masthead-stamp" id="stampFecha">Actualizado: —</div>
-  </header>
+require("dotenv").config();
+const express = require("express");
+const cors = require("cors");
+const axios = require("axios");
 
-  <div class="tabs">
-    <button class="tab active" onclick="cambiarTab('egresos',this)">Egresos</button>
-    <button class="tab" onclick="cambiarTab('ingresos',this)">Ingresos</button>
-  </div>
+const app = express();
+app.use(cors());
+app.use(express.json());
 
-  <!-- EGRESOS -->
-  <div id="tab-egresos" class="tab-panel active">
-    <div class="filters">
-      <div class="field"><label>Fecha desde</label><input type="date" id="eg-desde"/></div>
-      <div class="field"><label>Fecha hasta</label><input type="date" id="eg-hasta"/></div>
-      <div class="field">
-        <label>Empresa</label>
-        <select id="eg-empresa">
-          <option value="">Todas las empresas</option>
-          <option value="SIG">Salud Integral (SIG)</option>
-          <option value="CEMEI">SIG Clínica (CEMEI)</option>
-          <option value="NEO">Neoform</option>
-        </select>
-      </div>
-      <div class="field">
-        <label>Unidad CEMEI</label>
-        <select id="eg-unidad">
-          <option value="">Todas</option>
-          <option value="CEMEI SRL">CEMEI SRL</option>
-          <option value="CEMEI Odontología">CEMEI Odontología</option>
-          <option value="Farmacia">Farmacia</option>
-        </select>
-      </div>
-      <div class="field" style="min-width:220px;">
-        <label>URL del backend</label>
-        <input type="text" id="eg-backend" value="https://reporte-financiero-backend.onrender.com"/>
-      </div>
-      <button class="btn" onclick="consultarEgresos()">Consultar</button>
-    </div>
-    <div class="estado" id="eg-estado"></div>
-    <div class="summary" id="eg-summary"></div>
-    <section class="block">
-      <div class="block-title">Importe por rubro <span class="n" id="eg-rubroN"></span></div>
-      <div class="chart-card"><canvas id="eg-chart"></canvas></div>
-    </section>
-    <section class="block">
-      <div class="block-title">Pagos <span class="n" id="eg-tablaN"></span></div>
-      <div class="table-scroll">
-        <table>
-          <thead><tr><th>Fecha</th><th>Empresa</th><th>Unidad</th><th>Proveedor</th><th>Rubro</th><th class="num">Importe</th><th>Concepto</th></tr></thead>
-          <tbody id="eg-tbody"></tbody>
-        </table>
-      </div>
-    </section>
-  </div>
+const PORT = process.env.PORT || 3000;
 
-  <!-- INGRESOS -->
-  <div id="tab-ingresos" class="tab-panel">
-    <div class="filters">
-      <div class="field"><label>Fecha desde</label><input type="date" id="ing-desde"/></div>
-      <div class="field"><label>Fecha hasta</label><input type="date" id="ing-hasta"/></div>
-      <div class="field">
-        <label>Empresa</label>
-        <select id="ing-empresa">
-          <option value="">Todas las empresas</option>
-          <option value="SIG">Salud Integral (SIG)</option>
-          <option value="CEMEI">SIG Clínica (CEMEI)</option>
-          <option value="NEO">Neoform</option>
-        </select>
-      </div>
-      <div class="field" style="min-width:220px;">
-        <label>URL del backend</label>
-        <input type="text" id="ing-backend" value="https://reporte-financiero-backend.onrender.com"/>
-      </div>
-      <button class="btn" onclick="consultarIngresos()">Consultar</button>
-    </div>
-    <div class="estado" id="ing-estado"></div>
-    <div class="summary" id="ing-summary"></div>
-    <section class="block">
-      <div class="block-title">Cobros por empresa <span class="n" id="ing-empresaN"></span></div>
-      <div class="chart-card"><canvas id="ing-chart"></canvas></div>
-    </section>
-    <section class="block">
-      <div class="block-title">Detalle de cobros <span class="n" id="ing-tablaN"></span></div>
-      <div class="table-scroll">
-        <table>
-          <thead><tr><th>Fecha Cobro</th><th>Empresa</th><th>Cliente</th><th>Forma de Pago</th><th class="num">Monto</th><th>Concepto</th></tr></thead>
-          <tbody id="ing-tbody"></tbody>
-        </table>
-      </div>
-    </section>
-  </div>
+const PRIMER_MES_DISPONIBLE = "2026-01";
 
-  <footer>Datos provistos por las APIs internas de SOEM Group — uso interno</footer>
-</div>
+const FUENTES = [
+  {
+    codigo: "SIG",
+    nombre: "Salud Integral (SIG)",
+    endpoint: "https://api-sintegral.soemgroup.com.ar",
+    loginPath: "/login/",
+    usuario: process.env.USUARIO_SIG,
+    clave: process.env.CLAVE_SIG,
+    cobranzasPath: "/consultar_cobranzas/",
+    cobranzasKey: "registrosCobranzas",
+  },
+  {
+    codigo: "CEMEI",
+    nombre: "SIG Clínica (CEMEI)",
+    endpoint: "https://api-cemei.soemgroup.com.ar",
+    loginPath: "/login/",
+    usuario: process.env.USUARIO_CEMEI,
+    clave: process.env.CLAVE_CEMEI,
+    facturacionPath: "/listFacturacion/",
+    facturacionKey: "registrosFacturas",
+  },
+  {
+    codigo: "NEO",
+    nombre: "Neoform",
+    endpoint: "https://api-neo.soemgroup.com.ar",
+    loginPath: "/loginUserApi/",
+    usuario: process.env.USUARIO_NEO,
+    clave: process.env.CLAVE_NEO,
+    facturacionPath: "/listFacturacion/",
+    facturacionKey: "registrosFacturas",
+  },
+];
 
-<script>
-let egChart=null, ingChart=null;
-let egBrutos=[], ingBrutos=[];
+// ---------- TOKEN CACHE ----------
+const tokenCache = {};
+const TOKEN_TTL_MS = 5 * 60 * 1000;
 
-function hoyISO(){ return new Date().toISOString().slice(0,10); }
-function primerDiaMes(){ const d=new Date(); return new Date(d.getFullYear(),d.getMonth(),1).toISOString().slice(0,10); }
-function formatARS(n){ return new Intl.NumberFormat('es-AR',{style:'currency',currency:'ARS',maximumFractionDigits:0}).format(n||0); }
-function formatFecha(iso){ if(!iso) return '—'; const [y,m,d]=iso.split('-'); return `${d}/${m}/${y}`; }
-function esc(s){ return String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
-
-function empresaKey(origen){
-  if(!origen) return 'SIG';
-  if(origen.includes('CEMEI')) return 'CEMEI';
-  if(origen.includes('Neoform')) return 'NEO';
-  return 'SIG';
+async function obtenerToken(fuente) {
+  const cache = tokenCache[fuente.endpoint];
+  if (cache && Date.now() - cache.obtenidoEn < TOKEN_TTL_MS) return cache.token;
+  const respuesta = await axios.post(`${fuente.endpoint}${fuente.loginPath}`, {
+    username: fuente.usuario,
+    password: fuente.clave,
+  });
+  const token = respuesta.data.tokenAuth;
+  if (!token) throw new Error(`Login sin token para ${fuente.nombre}`);
+  tokenCache[fuente.endpoint] = { token, obtenidoEn: Date.now() };
+  return token;
 }
 
-function badgeEmpresa(origen){
-  const k=empresaKey(origen);
-  const label=k==='CEMEI'?'CEMEI':k==='NEO'?'NEO':'SIG';
-  return `<span class="badge ${k.toLowerCase()}">${label}</span>`;
+// ---------- HELPERS ----------
+function convertirFecha(fechaTexto) {
+  // dd-MM-yyyy → yyyy-MM-dd
+  if (!fechaTexto) return null;
+  const [dia, mes, anio] = fechaTexto.split("-");
+  return `${anio}-${mes}-${dia}`;
 }
 
-function badgeUnidad(unidad){
-  if(!unidad) return '<span style="color:var(--muted);font-size:12px">—</span>';
-  if(unidad==='Farmacia') return `<span class="badge farm">Farmacia</span>`;
-  if(unidad==='CEMEI Odontología') return `<span class="badge odonto">Odonto</span>`;
-  if(unidad==='CEMEI SRL') return `<span class="badge cemei">SRL</span>`;
-  return `<span style="font-size:12px;color:var(--muted)">${esc(unidad)}</span>`;
+function ultimoDiaDeMes(anioMes) {
+  const [anio, mes] = anioMes.split("-").map(Number);
+  const dia = new Date(Date.UTC(anio, mes, 0)).getUTCDate();
+  return `${anioMes}-${String(dia).padStart(2, "0")}`;
 }
 
-function cambiarTab(id,btn){
-  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-  document.getElementById('tab-'+id).classList.add('active');
-  btn.classList.add('active');
+function sumarMeses(anioMes, cantidad) {
+  let [anio, mes] = anioMes.split("-").map(Number);
+  mes += cantidad;
+  while (mes > 12) { mes -= 12; anio += 1; }
+  while (mes < 1)  { mes += 12; anio -= 1; }
+  return `${anio}-${String(mes).padStart(2, "0")}`;
 }
 
-// ---- EGRESOS ----
-async function consultarEgresos(){
-  const desde=document.getElementById('eg-desde').value;
-  const hasta=document.getElementById('eg-hasta').value;
-  const backend=document.getElementById('eg-backend').value.trim().replace(/\/$/,'');
-  const estado=document.getElementById('eg-estado');
-  if(!desde){estado.textContent='La fecha "desde" es obligatoria.';estado.className='estado error';return;}
-  estado.className='estado';estado.textContent='Consultando…';
-  try{
-    const resp=await fetch(`${backend}/api/pagos?desde=${desde}&hasta=${hasta||desde}`);
-    if(!resp.ok) throw new Error(`HTTP ${resp.status}`);
-    const data=await resp.json();
-    egBrutos=data.pagos;
-    estado.textContent=`${data.total} pagos encontrados.`;
-    document.getElementById('stampFecha').textContent=`Actualizado: ${new Date().toLocaleString('es-AR')}`;
-    renderEgresos();
-  }catch(err){
-    estado.className='estado error';
-    estado.textContent=`Error: ${err.message}`;
-  }
-}
-
-function filtrarEgresos(){
-  const emp=document.getElementById('eg-empresa').value;
-  const uni=document.getElementById('eg-unidad').value;
-  return egBrutos.filter(p=>{
-    if(emp && empresaKey(p.origen)!==emp) return false;
-    if(uni && p.unidad!==uni) return false;
-    return true;
+// ---------- EGRESOS: /api/pagos ----------
+async function obtenerDetallePagos(fuente, fechaDesde, fechaHasta) {
+  const token = await obtenerToken(fuente);
+  const respuesta = await axios.post(
+    `${fuente.endpoint}/consultar_detalle_pagos/`,
+    { fecha_desde: fechaDesde, fecha_hasta: fechaHasta },
+    { headers: { "X-Authorization-token": token } }
+  );
+  const lista = respuesta.data.listadoDetPagos || [];
+  return lista.map((item) => {
+    const rawCaja = (item.empresa_caja || "").toUpperCase().trim();
+    let unidad = item.empresa_caja || null;
+    if (rawCaja === "CONVENIO EXTERNO") unidad = "Farmacia";
+    else if (rawCaja === "CEMEI ODONTOLOGIA") unidad = "CEMEI Odontología";
+    else if (rawCaja === "CEMEI SRL") unidad = "CEMEI SRL";
+    return {
+      idPago: item.id_pago,
+      proveedor: item.proveedor,
+      banco: item.banco,
+      importe: parseFloat(item.importe),
+      concepto: item.concepto,
+      cobrado: item.cobrado,
+      fechaCobro: convertirFecha(item.fecha_cobro),
+      rubro: item.rubro,
+      origen: fuente.nombre,
+      unidad: unidad,
+    };
   });
 }
 
-function renderEgresos(){
-  const pagos=filtrarEgresos();
-  const total=pagos.reduce((a,p)=>a+(p.importe||0),0);
-  const sig=pagos.filter(p=>empresaKey(p.origen)==='SIG').reduce((a,p)=>a+(p.importe||0),0);
-  const cemei=pagos.filter(p=>empresaKey(p.origen)==='CEMEI').reduce((a,p)=>a+(p.importe||0),0);
-  const neo=pagos.filter(p=>empresaKey(p.origen)==='NEO').reduce((a,p)=>a+(p.importe||0),0);
-  // Sub-totales CEMEI
-  const cemeiSRL=pagos.filter(p=>p.unidad==='CEMEI SRL').reduce((a,p)=>a+(p.importe||0),0);
-  const cemeiOdo=pagos.filter(p=>p.unidad==='CEMEI Odontología').reduce((a,p)=>a+(p.importe||0),0);
-  const farm=pagos.filter(p=>p.unidad==='Farmacia').reduce((a,p)=>a+(p.importe||0),0);
+app.get("/api/pagos", async (req, res) => {
+  const { desde, hasta } = req.query;
+  if (!desde) return res.status(400).json({ error: "El parámetro 'desde' es obligatorio (yyyy-mm-dd)" });
+  const resultados = await Promise.allSettled(
+    FUENTES.map((f) => obtenerDetallePagos(f, desde, hasta || desde))
+  );
+  const errores = [];
+  const combinado = [];
+  resultados.forEach((r, i) => {
+    if (r.status === "fulfilled") combinado.push(...r.value);
+    else {
+      const msg = `${FUENTES[i].nombre}: ${r.reason?.message || "error"}`;
+      errores.push(msg);
+      console.error("Error en fuente", msg);
+    }
+  });
+  res.json({
+    total: combinado.length,
+    importeTotal: combinado.reduce((a, p) => a + (p.importe || 0), 0),
+    pagos: combinado,
+    errores: errores.length > 0 ? errores : undefined,
+  });
+});
 
-  document.getElementById('eg-summary').innerHTML=`
-    <div class="card"><div class="label">Total general</div><div class="value">${formatARS(total)}</div></div>
-    <div class="card sig"><div class="label">Salud Integral</div><div class="value">${formatARS(sig)}</div></div>
-    <div class="card cemei"><div class="label">CEMEI SRL</div><div class="value">${formatARS(cemeiSRL)}</div></div>
-    <div class="card odonto" style="background:#fff"><div class="label" style="color:var(--muted)">CEMEI Odonto</div><div class="value" style="color:#5B3E8E">${formatARS(cemeiOdo)}</div></div>
-    <div class="card farm"><div class="label">Farmacia</div><div class="value">${formatARS(farm)}</div></div>
-    <div class="card neo"><div class="label">Neoform</div><div class="value">${formatARS(neo)}</div></div>
-    <div class="card"><div class="label">Pagos</div><div class="value">${pagos.length}</div></div>`;
+// ---------- INGRESOS: /api/cobros ----------
+// SIG → /consultar_cobranzas/ directo con el rango exacto
+// CEMEI/NEO → /listFacturacion/ ampliado, filtrado por fecha_cobro en el período
 
-  const porRubro={};
-  pagos.forEach(p=>{const r=p.rubro||'Sin rubro';porRubro[r]=(porRubro[r]||0)+(p.importe||0);});
-  const entradas=Object.entries(porRubro).sort((a,b)=>b[1]-a[1]).slice(0,14);
-  document.getElementById('eg-rubroN').textContent=`(${Object.keys(porRubro).length} rubros)`;
-  const ctx=document.getElementById('eg-chart').getContext('2d');
-  if(egChart) egChart.destroy();
-  egChart=new Chart(ctx,{type:'bar',data:{labels:entradas.map(e=>e[0]),datasets:[{data:entradas.map(e=>e[1]),backgroundColor:'#0F6657',borderRadius:2,maxBarThickness:28}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>formatARS(c.parsed.x)}}},scales:{x:{ticks:{callback:v=>formatARS(v),font:{family:'IBM Plex Mono',size:10}},grid:{color:'#EFEAE0'}},y:{ticks:{font:{family:'Inter',size:11}},grid:{display:false}}}}});
-
-  document.getElementById('eg-tablaN').textContent=`(${pagos.length})`;
-  const ord=[...pagos].sort((a,b)=>(b.fechaCobro||'').localeCompare(a.fechaCobro||''));
-  document.getElementById('eg-tbody').innerHTML=ord.map(p=>`<tr>
-    <td>${formatFecha(p.fechaCobro)}</td>
-    <td>${badgeEmpresa(p.origen)}</td>
-    <td>${badgeUnidad(p.unidad)}</td>
-    <td>${esc(p.proveedor)}</td>
-    <td>${esc(p.rubro)}</td>
-    <td class="num">${formatARS(p.importe)}</td>
-    <td class="small">${esc(p.concepto)}</td>
-  </tr>`).join('');
+function normalizarCobranzaSIG(item, fuente) {
+  const monto = parseFloat(item.importe) || 0;
+  return {
+    empresa: fuente.nombre,
+    fechaCobro: item.fecha_cobrado || item.fecha_emision || null,
+    cliente: item.cliente || item.obra_social || "Sin cliente",
+    concepto: item.concepto_factura || item.concepto || "",
+    comprobante: item.comprobante || item.numero_comprobante || null,
+    formaPago: item.tipo_cobranza || item.banco || "",
+    monto,
+  };
 }
 
-document.getElementById('eg-empresa').addEventListener('change',()=>{if(egBrutos.length)renderEgresos();});
-document.getElementById('eg-unidad').addEventListener('change',()=>{if(egBrutos.length)renderEgresos();});
+function normalizarFacturacionCobro(item, fuente) {
+  const monto = parseFloat(item.monto) || 0;
+  const cobradoFlag = ["si", "sí", "1"].includes(String(item.cobrado || "").toLowerCase());
+  if (!cobradoFlag) return null;
+  return {
+    empresa: fuente.nombre,
+    fechaCobro: item.fecha_cobro || item.fecha || null,
+    cliente: item.cliente || "Sin cliente",
+    concepto: item.concepto || "",
+    comprobante: item.comprobante || null,
+    formaPago: item.forma_pago || "",
+    monto,
+  };
+}
 
-// ---- INGRESOS ----
-async function consultarIngresos(){
-  const desde=document.getElementById('ing-desde').value;
-  const hasta=document.getElementById('ing-hasta').value;
-  const backend=document.getElementById('ing-backend').value.trim().replace(/\/$/,'');
-  const estado=document.getElementById('ing-estado');
-  if(!desde){estado.textContent='La fecha "desde" es obligatoria.';estado.className='estado error';return;}
-  estado.className='estado';estado.textContent='Consultando…';
-  try{
-    const resp=await fetch(`${backend}/api/cobros?desde=${desde}&hasta=${hasta||desde}`);
-    if(!resp.ok) throw new Error(`HTTP ${resp.status}`);
-    const data=await resp.json();
-    ingBrutos=data.cobros;
-    estado.textContent=`${data.total} cobros — Total: ${formatARS(data.totalCobrado)}`;
-    document.getElementById('stampFecha').textContent=`Actualizado: ${new Date().toLocaleString('es-AR')}`;
-    renderIngresos();
-  }catch(err){
-    estado.className='estado error';
-    estado.textContent=`Error: ${err.message}`;
+async function obtenerCobranzasSIG(fuente, desde, hasta) {
+  const token = await obtenerToken(fuente);
+  const respuesta = await axios.post(
+    `${fuente.endpoint}${fuente.cobranzasPath}`,
+    { fecha_desde: desde, fecha_hasta: hasta },
+    { headers: { "X-Authorization-token": token } }
+  );
+  const lista = respuesta.data[fuente.cobranzasKey];
+  if (!Array.isArray(lista)) throw new Error(`${fuente.nombre}: clave "${fuente.cobranzasKey}" no encontrada`);
+  return lista.map((item) => normalizarCobranzaSIG(item, fuente)).filter(Boolean);
+}
+
+async function obtenerCobrosFacturacion(fuente, desde, hasta) {
+  const token = await obtenerToken(fuente);
+  // Ampliar la ventana hacia atrás para capturar cobros de facturas viejas
+  const desdeAmpliado = `${PRIMER_MES_DISPONIBLE}-01`;
+  const hastaAmpliado = ultimoDiaDeMes(sumarMeses(hasta.slice(0, 7), 1));
+  const respuesta = await axios.post(
+    `${fuente.endpoint}${fuente.facturacionPath}`,
+    { fecha_desde: desdeAmpliado, fecha_hasta: hastaAmpliado },
+    { headers: { "X-Authorization-token": token } }
+  );
+  const lista = respuesta.data[fuente.facturacionKey];
+  if (!Array.isArray(lista)) throw new Error(`${fuente.nombre}: clave "${fuente.facturacionKey}" no encontrada`);
+  return lista
+    .map((item) => normalizarFacturacionCobro(item, fuente))
+    .filter((c) => {
+      if (!c) return false;
+      if (!c.fechaCobro) return false;
+      // Solo los cobrados dentro del rango pedido
+      return c.fechaCobro >= desde && c.fechaCobro <= hasta;
+    });
+}
+
+app.get("/api/cobros", async (req, res) => {
+  const { desde, hasta } = req.query;
+  if (!desde) return res.status(400).json({ error: "El parámetro 'desde' es obligatorio (yyyy-mm-dd)" });
+  const fechaHasta = hasta || ultimoDiaDeMes(desde.slice(0, 7));
+
+  const resultados = await Promise.allSettled(
+    FUENTES.map((f) =>
+      f.codigo === "SIG"
+        ? obtenerCobranzasSIG(f, desde, fechaHasta)
+        : obtenerCobrosFacturacion(f, desde, fechaHasta)
+    )
+  );
+
+  const errores = [];
+  const combinado = [];
+  resultados.forEach((r, i) => {
+    if (r.status === "fulfilled") combinado.push(...r.value);
+    else {
+      const msg = `${FUENTES[i].nombre}: ${r.reason?.message || "error"}`;
+      errores.push(msg);
+      console.error("Error en cobros", msg);
+    }
+  });
+
+  res.json({
+    total: combinado.length,
+    totalCobrado: combinado.reduce((a, c) => a + (c.monto || 0), 0),
+    cobros: combinado.sort((a, b) => (b.fechaCobro || "").localeCompare(a.fechaCobro || "")),
+    errores: errores.length > 0 ? errores : undefined,
+  });
+});
+
+// --- DEBUG: respuesta cruda de consultar_detalle_pagos sin normalizar ---
+// GET /api/debug/pagos-raw?empresa=CEMEI&desde=2026-06-01&hasta=2026-06-30&limite=5
+app.get("/api/debug/pagos-raw", async (req, res) => {
+  const { empresa, desde, hasta, limite } = req.query;
+  if (!empresa || !desde) return res.status(400).json({ error: "Necesitás 'empresa' (SIG, CEMEI o NEO) y 'desde'" });
+  const fuente = FUENTES.find(f => f.codigo.toLowerCase() === empresa.toLowerCase());
+  if (!fuente) return res.status(400).json({ error: `Empresa desconocida: ${empresa}` });
+  try {
+    const token = await obtenerToken(fuente);
+    const respuesta = await axios.post(
+      `${fuente.endpoint}/consultar_detalle_pagos/`,
+      { fecha_desde: desde, fecha_hasta: hasta || desde },
+      { headers: { "X-Authorization-token": token } }
+    );
+    const lista = respuesta.data.listadoDetPagos || [];
+    const n = Math.min(parseInt(limite, 10) || 5, 50);
+    res.json({
+      endpoint: `${fuente.endpoint}/consultar_detalle_pagos/`,
+      totalRegistros: lista.length,
+      camposDisponibles: lista[0] ? Object.keys(lista[0]) : [],
+      muestra: lista.slice(0, n),
+    });
+  } catch (err) {
+    res.status(500).json({ error: err.response ? `HTTP ${err.response.status}: ${JSON.stringify(err.response.data)}` : err.message });
   }
-}
+});
 
-function filtrarIngresos(){
-  const emp=document.getElementById('ing-empresa').value;
-  if(!emp) return ingBrutos;
-  return ingBrutos.filter(c=>empresaKey(c.empresa)===emp);
-}
-
-function renderIngresos(){
-  const cobros=filtrarIngresos();
-  const total=cobros.reduce((a,c)=>a+(c.monto||0),0);
-  const sig=cobros.filter(c=>empresaKey(c.empresa)==='SIG').reduce((a,c)=>a+(c.monto||0),0);
-  const cemei=cobros.filter(c=>empresaKey(c.empresa)==='CEMEI').reduce((a,c)=>a+(c.monto||0),0);
-  const neo=cobros.filter(c=>empresaKey(c.empresa)==='NEO').reduce((a,c)=>a+(c.monto||0),0);
-  document.getElementById('ing-summary').innerHTML=`
-    <div class="card"><div class="label">Total cobrado</div><div class="value">${formatARS(total)}</div></div>
-    <div class="card sig"><div class="label">Salud Integral</div><div class="value">${formatARS(sig)}</div></div>
-    <div class="card cemei"><div class="label">CEMEI</div><div class="value">${formatARS(cemei)}</div></div>
-    <div class="card neo"><div class="label">Neoform</div><div class="value">${formatARS(neo)}</div></div>
-    <div class="card"><div class="label">Cobros</div><div class="value">${cobros.length}</div></div>`;
-
-  const porEmpresa={};
-  cobros.forEach(c=>{const e=c.empresa||'Sin empresa';porEmpresa[e]=(porEmpresa[e]||0)+(c.monto||0);});
-  const entradas=Object.entries(porEmpresa).sort((a,b)=>b[1]-a[1]);
-  document.getElementById('ing-empresaN').textContent=`(${entradas.length})`;
-  const COLS=['#0F6657','#B5563C','#2E5E8E'];
-  const ctx2=document.getElementById('ing-chart').getContext('2d');
-  if(ingChart) ingChart.destroy();
-  ingChart=new Chart(ctx2,{type:'bar',data:{labels:entradas.map(e=>e[0]),datasets:[{data:entradas.map(e=>e[1]),backgroundColor:entradas.map((_,i)=>COLS[i%COLS.length]),borderRadius:2,maxBarThickness:48}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>formatARS(c.parsed.y)}}},scales:{x:{ticks:{font:{family:'Inter',size:12}},grid:{display:false}},y:{ticks:{callback:v=>formatARS(v),font:{family:'IBM Plex Mono',size:10}},grid:{color:'#EFEAE0'}}}}});
-
-  document.getElementById('ing-tablaN').textContent=`(${cobros.length})`;
-  document.getElementById('ing-tbody').innerHTML=cobros.map(c=>`<tr>
-    <td>${formatFecha(c.fechaCobro)}</td>
-    <td>${badgeEmpresa(c.empresa)}</td>
-    <td>${esc(c.cliente)}</td>
-    <td>${esc(c.formaPago)}</td>
-    <td class="num">${formatARS(c.monto)}</td>
-    <td class="small">${esc(c.concepto)}</td>
-  </tr>`).join('');
-}
-
-document.getElementById('ing-empresa').addEventListener('change',()=>{if(ingBrutos.length)renderIngresos();});
-
-// INIT
-['eg-desde','ing-desde'].forEach(id=>document.getElementById(id).value=primerDiaMes());
-['eg-hasta','ing-hasta'].forEach(id=>document.getElementById(id).value=hoyISO());
-</script>
-</body>
-</html>
+app.get("/", (req, res) => res.send("Backend financiero activo. Endpoints: /api/pagos /api/cobros"));
+app.listen(PORT, () => console.log(`Servidor corriendo en puerto ${PORT}`));
