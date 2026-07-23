@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Reporte Financiero — Detalle de Pagos</title>
+<title>Reporte Financiero — SOEM Group</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,500;8..60,600;8..60,700&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
@@ -13,6 +13,7 @@
     --sig:#0F6657; --sig-soft:#E4F0EC;
     --cemei:#B5563C; --cemei-soft:#F6E8E2;
     --neo:#2E5E8E; --neo-soft:#E2ECF6;
+    --farm:#7A5E2E; --farm-soft:#F5EFE0;
     --muted:#6B6458;
     --display:'Source Serif 4',Georgia,serif;
     --mono:'IBM Plex Mono',ui-monospace,SFMono-Regular,monospace;
@@ -20,124 +21,161 @@
   }
   *{box-sizing:border-box;}
   body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);-webkit-font-smoothing:antialiased;}
-  .wrap{max-width:1100px;margin:0 auto;padding:40px 24px 80px;}
-
-  header.masthead{border-bottom:2px solid var(--ink);padding-bottom:18px;margin-bottom:28px;display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:12px;}
-  .masthead-title{font-family:var(--display);font-weight:600;font-size:32px;letter-spacing:-0.01em;}
+  .wrap{max-width:1140px;margin:0 auto;padding:32px 24px 80px;}
+  header.masthead{border-bottom:2px solid var(--ink);padding-bottom:16px;margin-bottom:24px;display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:12px;}
+  .masthead-title{font-family:var(--display);font-weight:600;font-size:30px;letter-spacing:-0.01em;}
   .masthead-sub{font-family:var(--mono);font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;margin-top:4px;}
   .masthead-stamp{font-family:var(--mono);font-size:11px;color:var(--muted);text-align:right;line-height:1.7;}
-
-  .filters{display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap;background:#fff;border:1px solid var(--paper-line);border-radius:4px;padding:16px 18px;margin-bottom:22px;}
+  .tabs{display:flex;gap:0;margin-bottom:24px;border-bottom:2px solid var(--paper-line);}
+  .tab{font-family:var(--sans);font-size:13px;font-weight:600;padding:10px 24px;cursor:pointer;border:none;background:none;color:var(--muted);border-bottom:2px solid transparent;margin-bottom:-2px;}
+  .tab.active{color:var(--ink);border-bottom-color:var(--ink);}
+  .tab:hover:not(.active){color:var(--ink);}
+  .tab-panel{display:none;}
+  .tab-panel.active{display:block;}
+  .filters{display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap;background:#fff;border:1px solid var(--paper-line);border-radius:4px;padding:14px 16px;margin-bottom:20px;}
   .field{display:flex;flex-direction:column;gap:5px;}
   .field label{font-size:10.5px;text-transform:uppercase;letter-spacing:0.06em;color:var(--muted);font-weight:600;}
   .field input,.field select{font-family:var(--mono);font-size:13px;border:1px solid var(--paper-line);border-radius:3px;padding:7px 10px;background:var(--paper);color:var(--ink);}
-  .field input{min-width:148px;}
-  .field select{min-width:180px;cursor:pointer;}
+  .field input{min-width:140px;}
+  .field select{min-width:165px;cursor:pointer;}
   .field input:focus,.field select:focus{outline:2px solid var(--ink);outline-offset:1px;}
-  button#btnBuscar{font-family:var(--sans);font-weight:600;font-size:13px;background:var(--ink);color:var(--paper);border:none;border-radius:3px;padding:9px 20px;cursor:pointer;}
-  button#btnBuscar:hover{background:#0e1a20;}
-
-  .estado{font-family:var(--mono);font-size:12px;color:var(--muted);margin:-8px 0 20px;min-height:16px;}
+  .btn{font-family:var(--sans);font-weight:600;font-size:13px;background:var(--ink);color:var(--paper);border:none;border-radius:3px;padding:9px 20px;cursor:pointer;}
+  .btn:hover{background:#0e1a20;}
+  .estado{font-family:var(--mono);font-size:12px;color:var(--muted);margin:-8px 0 18px;min-height:16px;}
   .estado.error{color:var(--cemei);}
-
-  .summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:1px;background:var(--paper-line);border:1px solid var(--paper-line);margin-bottom:32px;}
-  .summary .card{background:#fff;padding:18px 20px;}
+  .summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1px;background:var(--paper-line);border:1px solid var(--paper-line);margin-bottom:28px;}
+  .summary .card{background:#fff;padding:16px 18px;}
   .summary .card .label{font-size:10.5px;text-transform:uppercase;letter-spacing:0.06em;color:var(--muted);font-weight:600;margin-bottom:8px;}
-  .summary .card .value{font-family:var(--mono);font-size:20px;font-weight:600;font-variant-numeric:tabular-nums;}
+  .summary .card .value{font-family:var(--mono);font-size:19px;font-weight:600;font-variant-numeric:tabular-nums;}
   .summary .card.sig .value{color:var(--sig);}
   .summary .card.cemei .value{color:var(--cemei);}
   .summary .card.neo .value{color:var(--neo);}
-
-  section.block{margin-bottom:36px;}
-  .block-title{font-family:var(--display);font-size:19px;font-weight:600;display:flex;align-items:baseline;gap:8px;margin-bottom:14px;}
+  .summary .card.farm .value{color:var(--farm);}
+  section.block{margin-bottom:32px;}
+  .block-title{font-family:var(--display);font-size:18px;font-weight:600;display:flex;align-items:baseline;gap:8px;margin-bottom:12px;}
   .block-title .n{font-family:var(--mono);font-size:11px;color:var(--muted);}
-  .chart-card{background:#fff;border:1px solid var(--paper-line);border-radius:4px;padding:22px;height:360px;}
-
+  .chart-card{background:#fff;border:1px solid var(--paper-line);border-radius:4px;padding:20px;height:340px;}
   table{width:100%;border-collapse:collapse;background:#fff;}
-  thead th{text-align:left;font-size:10.5px;text-transform:uppercase;letter-spacing:0.05em;color:var(--muted);font-weight:600;padding:11px 12px;border-bottom:2px solid var(--ink);position:sticky;top:0;background:#fff;white-space:nowrap;}
-  tbody td{padding:10px 12px;border-bottom:1px solid var(--paper-line);font-size:13px;vertical-align:top;}
+  thead th{text-align:left;font-size:10.5px;text-transform:uppercase;letter-spacing:0.05em;color:var(--muted);font-weight:600;padding:10px 12px;border-bottom:2px solid var(--ink);position:sticky;top:0;background:#fff;white-space:nowrap;}
+  tbody td{padding:9px 12px;border-bottom:1px solid var(--paper-line);font-size:13px;vertical-align:top;}
   tbody tr:hover{background:var(--paper);}
   td.num{font-family:var(--mono);font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap;}
-  td.small{color:var(--muted);font-size:12px;max-width:300px;}
-  .badge{font-family:var(--mono);font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;padding:2px 7px;border-radius:3px;display:inline-block;}
+  td.small{color:var(--muted);font-size:12px;max-width:280px;}
+  .badge{font-family:var(--mono);font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;padding:2px 7px;border-radius:3px;display:inline-block;white-space:nowrap;}
   .badge.sig{background:var(--sig-soft);color:var(--sig);}
   .badge.cemei{background:var(--cemei-soft);color:var(--cemei);}
   .badge.neo{background:var(--neo-soft);color:var(--neo);}
-  .table-scroll{max-height:540px;overflow:auto;border:1px solid var(--paper-line);}
+  .badge.farm{background:var(--farm-soft);color:var(--farm);}
+  .badge.odonto{background:#EDE8F5;color:#5B3E8E;}
+  .table-scroll{max-height:500px;overflow:auto;border:1px solid var(--paper-line);}
   .table-scroll table{border:none;}
-
-  footer{margin-top:40px;padding-top:16px;border-top:1px solid var(--paper-line);font-family:var(--mono);font-size:10.5px;color:var(--muted);text-align:center;}
+  footer{margin-top:40px;padding-top:14px;border-top:1px solid var(--paper-line);font-family:var(--mono);font-size:10.5px;color:var(--muted);text-align:center;}
 </style>
 </head>
 <body>
 <div class="wrap">
-
   <header class="masthead">
     <div>
-      <div class="masthead-title">Detalle de Pagos</div>
+      <div class="masthead-title">Reporte Financiero</div>
       <div class="masthead-sub">Salud Integral · SIG Clínica (CEMEI) · Neoform</div>
     </div>
     <div class="masthead-stamp" id="stampFecha">Actualizado: —</div>
   </header>
 
-  <div class="filters">
-    <div class="field">
-      <label>Fecha desde</label>
-      <input type="date" id="desde" />
-    </div>
-    <div class="field">
-      <label>Fecha hasta</label>
-      <input type="date" id="hasta" />
-    </div>
-    <div class="field">
-      <label>Empresa</label>
-      <select id="filtroEmpresa">
-        <option value="">Todas las empresas</option>
-        <option value="SIG">Solo Salud Integral (SIG)</option>
-        <option value="CEMEI">Solo SIG Clínica (CEMEI)</option>
-        <option value="NEO">Solo Neoform</option>
-      </select>
-    </div>
-    <div class="field" style="min-width:240px;">
-      <label>URL del backend</label>
-      <input type="text" id="backendUrl" value="https://reporte-financiero-backend.onrender.com" />
-    </div>
-    <button id="btnBuscar">Consultar</button>
+  <div class="tabs">
+    <button class="tab active" onclick="cambiarTab('egresos',this)">Egresos</button>
+    <button class="tab" onclick="cambiarTab('ingresos',this)">Ingresos</button>
   </div>
 
-  <div class="estado" id="estado"></div>
-  <div class="summary" id="summary"></div>
-
-  <section class="block">
-    <div class="block-title">Importe por rubro <span class="n" id="rubroN"></span></div>
-    <div class="chart-card"><canvas id="chartRubro"></canvas></div>
-  </section>
-
-  <section class="block">
-    <div class="block-title">Pagos <span class="n" id="tablaN"></span></div>
-    <div class="table-scroll">
-      <table>
-        <thead>
-          <tr>
-            <th>Fecha</th>
-            <th>Empresa</th>
-            <th>Proveedor</th>
-            <th>Rubro</th>
-            <th class="num">Importe</th>
-            <th>Concepto</th>
-          </tr>
-        </thead>
-        <tbody id="tbodyPagos"></tbody>
-      </table>
+  <!-- EGRESOS -->
+  <div id="tab-egresos" class="tab-panel active">
+    <div class="filters">
+      <div class="field"><label>Fecha desde</label><input type="date" id="eg-desde"/></div>
+      <div class="field"><label>Fecha hasta</label><input type="date" id="eg-hasta"/></div>
+      <div class="field">
+        <label>Empresa</label>
+        <select id="eg-empresa">
+          <option value="">Todas las empresas</option>
+          <option value="SIG">Salud Integral (SIG)</option>
+          <option value="CEMEI">SIG Clínica (CEMEI)</option>
+          <option value="NEO">Neoform</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Unidad CEMEI</label>
+        <select id="eg-unidad">
+          <option value="">Todas</option>
+          <option value="CEMEI SRL">CEMEI SRL</option>
+          <option value="CEMEI Odontología">CEMEI Odontología</option>
+          <option value="Farmacia">Farmacia</option>
+        </select>
+      </div>
+      <div class="field" style="min-width:220px;">
+        <label>URL del backend</label>
+        <input type="text" id="eg-backend" value="https://reporte-financiero-backend.onrender.com"/>
+      </div>
+      <button class="btn" onclick="consultarEgresos()">Consultar</button>
     </div>
-  </section>
+    <div class="estado" id="eg-estado"></div>
+    <div class="summary" id="eg-summary"></div>
+    <section class="block">
+      <div class="block-title">Importe por rubro <span class="n" id="eg-rubroN"></span></div>
+      <div class="chart-card"><canvas id="eg-chart"></canvas></div>
+    </section>
+    <section class="block">
+      <div class="block-title">Pagos <span class="n" id="eg-tablaN"></span></div>
+      <div class="table-scroll">
+        <table>
+          <thead><tr><th>Fecha</th><th>Empresa</th><th>Unidad</th><th>Proveedor</th><th>Rubro</th><th class="num">Importe</th><th>Concepto</th></tr></thead>
+          <tbody id="eg-tbody"></tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+
+  <!-- INGRESOS -->
+  <div id="tab-ingresos" class="tab-panel">
+    <div class="filters">
+      <div class="field"><label>Fecha desde</label><input type="date" id="ing-desde"/></div>
+      <div class="field"><label>Fecha hasta</label><input type="date" id="ing-hasta"/></div>
+      <div class="field">
+        <label>Empresa</label>
+        <select id="ing-empresa">
+          <option value="">Todas las empresas</option>
+          <option value="SIG">Salud Integral (SIG)</option>
+          <option value="CEMEI">SIG Clínica (CEMEI)</option>
+          <option value="NEO">Neoform</option>
+        </select>
+      </div>
+      <div class="field" style="min-width:220px;">
+        <label>URL del backend</label>
+        <input type="text" id="ing-backend" value="https://reporte-financiero-backend.onrender.com"/>
+      </div>
+      <button class="btn" onclick="consultarIngresos()">Consultar</button>
+    </div>
+    <div class="estado" id="ing-estado"></div>
+    <div class="summary" id="ing-summary"></div>
+    <section class="block">
+      <div class="block-title">Cobros por empresa <span class="n" id="ing-empresaN"></span></div>
+      <div class="chart-card"><canvas id="ing-chart"></canvas></div>
+    </section>
+    <section class="block">
+      <div class="block-title">Detalle de cobros <span class="n" id="ing-tablaN"></span></div>
+      <div class="table-scroll">
+        <table>
+          <thead><tr><th>Fecha Cobro</th><th>Empresa</th><th>Cliente</th><th>Forma de Pago</th><th class="num">Monto</th><th>Concepto</th></tr></thead>
+          <tbody id="ing-tbody"></tbody>
+        </table>
+      </div>
+    </section>
+  </div>
 
   <footer>Datos provistos por las APIs internas de SOEM Group — uso interno</footer>
 </div>
 
 <script>
-let chartRubro = null;
-let pagosBrutos = [];
+let egChart=null, ingChart=null;
+let egBrutos=[], ingBrutos=[];
 
 function hoyISO(){ return new Date().toISOString().slice(0,10); }
 function primerDiaMes(){ const d=new Date(); return new Date(d.getFullYear(),d.getMonth(),1).toISOString().slice(0,10); }
@@ -146,104 +184,175 @@ function formatFecha(iso){ if(!iso) return '—'; const [y,m,d]=iso.split('-'); 
 function esc(s){ return String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 
 function empresaKey(origen){
+  if(!origen) return 'SIG';
   if(origen.includes('CEMEI')) return 'CEMEI';
   if(origen.includes('Neoform')) return 'NEO';
   return 'SIG';
 }
 
-function filtrarPagos(pagos){
-  const emp = document.getElementById('filtroEmpresa').value;
-  if(!emp) return pagos;
-  return pagos.filter(p => empresaKey(p.origen) === emp);
+function badgeEmpresa(origen){
+  const k=empresaKey(origen);
+  const label=k==='CEMEI'?'CEMEI':k==='NEO'?'NEO':'SIG';
+  return `<span class="badge ${k.toLowerCase()}">${label}</span>`;
 }
 
-async function consultar(){
-  const desde = document.getElementById('desde').value;
-  const hasta = document.getElementById('hasta').value;
-  const backendUrl = document.getElementById('backendUrl').value.trim().replace(/\/$/,'');
-  const estado = document.getElementById('estado');
-  if(!backendUrl){ estado.textContent='Ingresá la URL del backend.'; estado.className='estado error'; return; }
-  if(!desde){ estado.textContent='La fecha "desde" es obligatoria.'; estado.className='estado error'; return; }
-  estado.className='estado'; estado.textContent='Consultando…';
+function badgeUnidad(unidad){
+  if(!unidad) return '<span style="color:var(--muted);font-size:12px">—</span>';
+  if(unidad==='Farmacia') return `<span class="badge farm">Farmacia</span>`;
+  if(unidad==='CEMEI Odontología') return `<span class="badge odonto">Odonto</span>`;
+  if(unidad==='CEMEI SRL') return `<span class="badge cemei">SRL</span>`;
+  return `<span style="font-size:12px;color:var(--muted)">${esc(unidad)}</span>`;
+}
+
+function cambiarTab(id,btn){
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  btn.classList.add('active');
+}
+
+// ---- EGRESOS ----
+async function consultarEgresos(){
+  const desde=document.getElementById('eg-desde').value;
+  const hasta=document.getElementById('eg-hasta').value;
+  const backend=document.getElementById('eg-backend').value.trim().replace(/\/$/,'');
+  const estado=document.getElementById('eg-estado');
+  if(!desde){estado.textContent='La fecha "desde" es obligatoria.';estado.className='estado error';return;}
+  estado.className='estado';estado.textContent='Consultando…';
   try{
-    const resp = await fetch(`${backendUrl}/api/pagos?desde=${desde}&hasta=${hasta||desde}`);
-    if(!resp.ok){ const e=await resp.json().catch(()=>({})); throw new Error(e.error||`HTTP ${resp.status}`); }
-    const data = await resp.json();
-    pagosBrutos = data.pagos;
+    const resp=await fetch(`${backend}/api/pagos?desde=${desde}&hasta=${hasta||desde}`);
+    if(!resp.ok) throw new Error(`HTTP ${resp.status}`);
+    const data=await resp.json();
+    egBrutos=data.pagos;
     estado.textContent=`${data.total} pagos encontrados.`;
     document.getElementById('stampFecha').textContent=`Actualizado: ${new Date().toLocaleString('es-AR')}`;
-    render();
+    renderEgresos();
   }catch(err){
     estado.className='estado error';
-    estado.textContent=`No se pudo consultar: ${err.message}`;
+    estado.textContent=`Error: ${err.message}`;
   }
 }
 
-function render(){
-  const pagos = filtrarPagos(pagosBrutos);
-  renderSummary(pagos);
-  renderChart(pagos);
-  renderTabla(pagos);
-}
-
-function renderSummary(pagos){
-  const total = pagos.reduce((a,p)=>a+(p.importe||0),0);
-  const sig   = pagos.filter(p=>empresaKey(p.origen)==='SIG').reduce((a,p)=>a+(p.importe||0),0);
-  const cemei = pagos.filter(p=>empresaKey(p.origen)==='CEMEI').reduce((a,p)=>a+(p.importe||0),0);
-  const neo   = pagos.filter(p=>empresaKey(p.origen)==='NEO').reduce((a,p)=>a+(p.importe||0),0);
-  document.getElementById('summary').innerHTML=`
-    <div class="card"><div class="label">Total general</div><div class="value">${formatARS(total)}</div></div>
-    <div class="card sig"><div class="label">Salud Integral</div><div class="value">${formatARS(sig)}</div></div>
-    <div class="card cemei"><div class="label">CEMEI</div><div class="value">${formatARS(cemei)}</div></div>
-    <div class="card neo"><div class="label">Neoform</div><div class="value">${formatARS(neo)}</div></div>
-    <div class="card"><div class="label">Cantidad de pagos</div><div class="value">${pagos.length}</div></div>`;
-}
-
-function renderChart(pagos){
-  const porRubro={};
-  pagos.forEach(p=>{ const r=p.rubro||'Sin rubro'; porRubro[r]=(porRubro[r]||0)+(p.importe||0); });
-  const entradas=Object.entries(porRubro).sort((a,b)=>b[1]-a[1]).slice(0,14);
-  document.getElementById('rubroN').textContent=`(${Object.keys(porRubro).length} rubros)`;
-  const ctx=document.getElementById('chartRubro').getContext('2d');
-  if(chartRubro) chartRubro.destroy();
-  chartRubro=new Chart(ctx,{
-    type:'bar',
-    data:{
-      labels:entradas.map(e=>e[0]),
-      datasets:[{data:entradas.map(e=>e[1]),backgroundColor:'#0F6657',borderRadius:2,maxBarThickness:28}]
-    },
-    options:{
-      indexAxis:'y',responsive:true,maintainAspectRatio:false,
-      plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>formatARS(c.parsed.x)}}},
-      scales:{
-        x:{ticks:{callback:v=>formatARS(v),font:{family:'IBM Plex Mono',size:10}},grid:{color:'#EFEAE0'}},
-        y:{ticks:{font:{family:'Inter',size:11}},grid:{display:false}}
-      }
-    }
+function filtrarEgresos(){
+  const emp=document.getElementById('eg-empresa').value;
+  const uni=document.getElementById('eg-unidad').value;
+  return egBrutos.filter(p=>{
+    if(emp && empresaKey(p.origen)!==emp) return false;
+    if(uni && p.unidad!==uni) return false;
+    return true;
   });
 }
 
-function renderTabla(pagos){
-  document.getElementById('tablaN').textContent=`(${pagos.length})`;
+function renderEgresos(){
+  const pagos=filtrarEgresos();
+  const total=pagos.reduce((a,p)=>a+(p.importe||0),0);
+  const sig=pagos.filter(p=>empresaKey(p.origen)==='SIG').reduce((a,p)=>a+(p.importe||0),0);
+  const cemei=pagos.filter(p=>empresaKey(p.origen)==='CEMEI').reduce((a,p)=>a+(p.importe||0),0);
+  const neo=pagos.filter(p=>empresaKey(p.origen)==='NEO').reduce((a,p)=>a+(p.importe||0),0);
+  // Sub-totales CEMEI
+  const cemeiSRL=pagos.filter(p=>p.unidad==='CEMEI SRL').reduce((a,p)=>a+(p.importe||0),0);
+  const cemeiOdo=pagos.filter(p=>p.unidad==='CEMEI Odontología').reduce((a,p)=>a+(p.importe||0),0);
+  const farm=pagos.filter(p=>p.unidad==='Farmacia').reduce((a,p)=>a+(p.importe||0),0);
+
+  document.getElementById('eg-summary').innerHTML=`
+    <div class="card"><div class="label">Total general</div><div class="value">${formatARS(total)}</div></div>
+    <div class="card sig"><div class="label">Salud Integral</div><div class="value">${formatARS(sig)}</div></div>
+    <div class="card cemei"><div class="label">CEMEI SRL</div><div class="value">${formatARS(cemeiSRL)}</div></div>
+    <div class="card odonto" style="background:#fff"><div class="label" style="color:var(--muted)">CEMEI Odonto</div><div class="value" style="color:#5B3E8E">${formatARS(cemeiOdo)}</div></div>
+    <div class="card farm"><div class="label">Farmacia</div><div class="value">${formatARS(farm)}</div></div>
+    <div class="card neo"><div class="label">Neoform</div><div class="value">${formatARS(neo)}</div></div>
+    <div class="card"><div class="label">Pagos</div><div class="value">${pagos.length}</div></div>`;
+
+  const porRubro={};
+  pagos.forEach(p=>{const r=p.rubro||'Sin rubro';porRubro[r]=(porRubro[r]||0)+(p.importe||0);});
+  const entradas=Object.entries(porRubro).sort((a,b)=>b[1]-a[1]).slice(0,14);
+  document.getElementById('eg-rubroN').textContent=`(${Object.keys(porRubro).length} rubros)`;
+  const ctx=document.getElementById('eg-chart').getContext('2d');
+  if(egChart) egChart.destroy();
+  egChart=new Chart(ctx,{type:'bar',data:{labels:entradas.map(e=>e[0]),datasets:[{data:entradas.map(e=>e[1]),backgroundColor:'#0F6657',borderRadius:2,maxBarThickness:28}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>formatARS(c.parsed.x)}}},scales:{x:{ticks:{callback:v=>formatARS(v),font:{family:'IBM Plex Mono',size:10}},grid:{color:'#EFEAE0'}},y:{ticks:{font:{family:'Inter',size:11}},grid:{display:false}}}}});
+
+  document.getElementById('eg-tablaN').textContent=`(${pagos.length})`;
   const ord=[...pagos].sort((a,b)=>(b.fechaCobro||'').localeCompare(a.fechaCobro||''));
-  document.getElementById('tbodyPagos').innerHTML=ord.map(p=>{
-    const key=empresaKey(p.origen);
-    const label=key==='CEMEI'?'CEMEI':key==='NEO'?'NEO':'SIG';
-    return `<tr>
-      <td>${formatFecha(p.fechaCobro)}</td>
-      <td><span class="badge ${key.toLowerCase()}">${label}</span></td>
-      <td>${esc(p.proveedor)}</td>
-      <td>${esc(p.rubro)}</td>
-      <td class="num">${formatARS(p.importe)}</td>
-      <td class="small">${esc(p.concepto)}</td>
-    </tr>`;
-  }).join('');
+  document.getElementById('eg-tbody').innerHTML=ord.map(p=>`<tr>
+    <td>${formatFecha(p.fechaCobro)}</td>
+    <td>${badgeEmpresa(p.origen)}</td>
+    <td>${badgeUnidad(p.unidad)}</td>
+    <td>${esc(p.proveedor)}</td>
+    <td>${esc(p.rubro)}</td>
+    <td class="num">${formatARS(p.importe)}</td>
+    <td class="small">${esc(p.concepto)}</td>
+  </tr>`).join('');
 }
 
-document.getElementById('filtroEmpresa').addEventListener('change', ()=>{ if(pagosBrutos.length) render(); });
-document.getElementById('desde').value = primerDiaMes();
-document.getElementById('hasta').value = hoyISO();
-document.getElementById('btnBuscar').addEventListener('click', consultar);
+document.getElementById('eg-empresa').addEventListener('change',()=>{if(egBrutos.length)renderEgresos();});
+document.getElementById('eg-unidad').addEventListener('change',()=>{if(egBrutos.length)renderEgresos();});
+
+// ---- INGRESOS ----
+async function consultarIngresos(){
+  const desde=document.getElementById('ing-desde').value;
+  const hasta=document.getElementById('ing-hasta').value;
+  const backend=document.getElementById('ing-backend').value.trim().replace(/\/$/,'');
+  const estado=document.getElementById('ing-estado');
+  if(!desde){estado.textContent='La fecha "desde" es obligatoria.';estado.className='estado error';return;}
+  estado.className='estado';estado.textContent='Consultando…';
+  try{
+    const resp=await fetch(`${backend}/api/cobros?desde=${desde}&hasta=${hasta||desde}`);
+    if(!resp.ok) throw new Error(`HTTP ${resp.status}`);
+    const data=await resp.json();
+    ingBrutos=data.cobros;
+    estado.textContent=`${data.total} cobros — Total: ${formatARS(data.totalCobrado)}`;
+    document.getElementById('stampFecha').textContent=`Actualizado: ${new Date().toLocaleString('es-AR')}`;
+    renderIngresos();
+  }catch(err){
+    estado.className='estado error';
+    estado.textContent=`Error: ${err.message}`;
+  }
+}
+
+function filtrarIngresos(){
+  const emp=document.getElementById('ing-empresa').value;
+  if(!emp) return ingBrutos;
+  return ingBrutos.filter(c=>empresaKey(c.empresa)===emp);
+}
+
+function renderIngresos(){
+  const cobros=filtrarIngresos();
+  const total=cobros.reduce((a,c)=>a+(c.monto||0),0);
+  const sig=cobros.filter(c=>empresaKey(c.empresa)==='SIG').reduce((a,c)=>a+(c.monto||0),0);
+  const cemei=cobros.filter(c=>empresaKey(c.empresa)==='CEMEI').reduce((a,c)=>a+(c.monto||0),0);
+  const neo=cobros.filter(c=>empresaKey(c.empresa)==='NEO').reduce((a,c)=>a+(c.monto||0),0);
+  document.getElementById('ing-summary').innerHTML=`
+    <div class="card"><div class="label">Total cobrado</div><div class="value">${formatARS(total)}</div></div>
+    <div class="card sig"><div class="label">Salud Integral</div><div class="value">${formatARS(sig)}</div></div>
+    <div class="card cemei"><div class="label">CEMEI</div><div class="value">${formatARS(cemei)}</div></div>
+    <div class="card neo"><div class="label">Neoform</div><div class="value">${formatARS(neo)}</div></div>
+    <div class="card"><div class="label">Cobros</div><div class="value">${cobros.length}</div></div>`;
+
+  const porEmpresa={};
+  cobros.forEach(c=>{const e=c.empresa||'Sin empresa';porEmpresa[e]=(porEmpresa[e]||0)+(c.monto||0);});
+  const entradas=Object.entries(porEmpresa).sort((a,b)=>b[1]-a[1]);
+  document.getElementById('ing-empresaN').textContent=`(${entradas.length})`;
+  const COLS=['#0F6657','#B5563C','#2E5E8E'];
+  const ctx2=document.getElementById('ing-chart').getContext('2d');
+  if(ingChart) ingChart.destroy();
+  ingChart=new Chart(ctx2,{type:'bar',data:{labels:entradas.map(e=>e[0]),datasets:[{data:entradas.map(e=>e[1]),backgroundColor:entradas.map((_,i)=>COLS[i%COLS.length]),borderRadius:2,maxBarThickness:48}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>formatARS(c.parsed.y)}}},scales:{x:{ticks:{font:{family:'Inter',size:12}},grid:{display:false}},y:{ticks:{callback:v=>formatARS(v),font:{family:'IBM Plex Mono',size:10}},grid:{color:'#EFEAE0'}}}}});
+
+  document.getElementById('ing-tablaN').textContent=`(${cobros.length})`;
+  document.getElementById('ing-tbody').innerHTML=cobros.map(c=>`<tr>
+    <td>${formatFecha(c.fechaCobro)}</td>
+    <td>${badgeEmpresa(c.empresa)}</td>
+    <td>${esc(c.cliente)}</td>
+    <td>${esc(c.formaPago)}</td>
+    <td class="num">${formatARS(c.monto)}</td>
+    <td class="small">${esc(c.concepto)}</td>
+  </tr>`).join('');
+}
+
+document.getElementById('ing-empresa').addEventListener('change',()=>{if(ingBrutos.length)renderIngresos();});
+
+// INIT
+['eg-desde','ing-desde'].forEach(id=>document.getElementById(id).value=primerDiaMes());
+['eg-hasta','ing-hasta'].forEach(id=>document.getElementById(id).value=hoyISO());
 </script>
 </body>
 </html>
