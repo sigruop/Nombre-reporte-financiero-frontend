@@ -162,7 +162,7 @@
     <div class="estado" id="ing-estado"></div>
     <div class="summary" id="ing-summary"></div>
     <section class="block">
-      <div class="block-title">Cobros por empresa <span class="n" id="ing-empresaN"></span></div>
+      <div class="block-title">Cobros por sucursal / empresa <span class="n" id="ing-empresaN"></span></div>
       <div class="chart-card"><canvas id="ing-chart"></canvas></div>
     </section>
     <section class="block">
@@ -352,14 +352,18 @@ function renderIngresos(){
     <div class="card neo"><div class="label">Neoform</div><div class="value">${formatARS(neo)}</div></div>
     <div class="card"><div class="label">Cobros</div><div class="value">${cobros.length}</div></div>`;
 
-  const porEmpresa={};
-  cobros.forEach(c=>{const e=c.empresa||'Sin empresa';porEmpresa[e]=(porEmpresa[e]||0)+(c.monto||0);});
-  const entradas=Object.entries(porEmpresa).sort((a,b)=>b[1]-a[1]);
-  document.getElementById('ing-empresaN').textContent=`(${entradas.length})`;
-  const COLS=['#0F6657','#B5563C','#2E5E8E'];
+  // Agrupar por sucursal (para CEMEI/NEO) o por empresa (para SIG que no tiene sucursal)
+  const porSucursal={};
+  cobros.forEach(c=>{
+    const key = c.sucursal || c.empresa || 'Sin clasificar';
+    porSucursal[key]=(porSucursal[key]||0)+(c.monto||0);
+  });
+  const entradas=Object.entries(porSucursal).sort((a,b)=>b[1]-a[1]);
+  document.getElementById('ing-empresaN').textContent=`(${entradas.length} sucursales/empresas)`;
+  const COLS=['#0F6657','#B5563C','#2E5E8E','#7A5E2E','#5B3E8E','#1A6B6B'];
   const ctx2=document.getElementById('ing-chart').getContext('2d');
   if(ingChart) ingChart.destroy();
-  ingChart=new Chart(ctx2,{type:'bar',data:{labels:entradas.map(e=>e[0]),datasets:[{data:entradas.map(e=>e[1]),backgroundColor:entradas.map((_,i)=>COLS[i%COLS.length]),borderRadius:2,maxBarThickness:48}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>formatARS(c.parsed.y)}}},scales:{x:{ticks:{font:{family:'Inter',size:12}},grid:{display:false}},y:{ticks:{callback:v=>formatARS(v),font:{family:'IBM Plex Mono',size:10}},grid:{color:'#EFEAE0'}}}}});
+  ingChart=new Chart(ctx2,{type:'bar',data:{labels:entradas.map(e=>e[0]),datasets:[{data:entradas.map(e=>e[1]),backgroundColor:entradas.map((_,i)=>COLS[i%COLS.length]),borderRadius:2,maxBarThickness:64}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>formatARS(c.parsed.y)}}},scales:{x:{ticks:{font:{family:'Inter',size:12}},grid:{display:false}},y:{ticks:{callback:v=>formatARS(v),font:{family:'IBM Plex Mono',size:10}},grid:{color:'#EFEAE0'}}}}});
 
   document.getElementById('ing-tablaN').textContent=`(${cobros.length})`;
   document.getElementById('ing-tbody').innerHTML=cobros.map(c=>`<tr>
