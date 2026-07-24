@@ -1,27 +1,26 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Reporte Financiero — SOEM Group</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,500;8..60,600;8..60,700&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
 <style>
   :root{
-    --ink:#1C2B33; --paper:#F7F5F0; --paper-line:#DAD4C6;
-    --sig:#0F6657; --sig-soft:#E4F0EC;
-    --cemei:#B5563C; --cemei-soft:#F6E8E2;
-    --neo:#2E5E8E; --neo-soft:#E2ECF6;
-    --farm:#7A5E2E; --farm-soft:#F5EFE0;
+    --ink:#1C2B33;--paper:#F7F5F0;--paper-line:#DAD4C6;
+    --sig:#0F6657;--sig-soft:#E4F0EC;
+    --cemei:#B5563C;--cemei-soft:#F6E8E2;
+    --neo:#2E5E8E;--neo-soft:#E2ECF6;
     --muted:#6B6458;
     --display:'Source Serif 4',Georgia,serif;
-    --mono:'IBM Plex Mono',ui-monospace,SFMono-Regular,monospace;
+    --mono:'IBM Plex Mono',ui-monospace,monospace;
     --sans:'Inter',system-ui,sans-serif;
   }
   *{box-sizing:border-box;}
   body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);-webkit-font-smoothing:antialiased;}
-  .wrap{max-width:1140px;margin:0 auto;padding:32px 24px 80px;}
+  .wrap{max-width:1180px;margin:0 auto;padding:32px 24px 80px;}
   header.masthead{border-bottom:2px solid var(--ink);padding-bottom:16px;margin-bottom:24px;display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:12px;}
   .masthead-title{font-family:var(--display);font-weight:600;font-size:30px;letter-spacing:-0.01em;}
   .masthead-sub{font-family:var(--mono);font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;margin-top:4px;}
@@ -32,43 +31,54 @@
   .tab:hover:not(.active){color:var(--ink);}
   .tab-panel{display:none;}
   .tab-panel.active{display:block;}
-  .filters{display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap;background:#fff;border:1px solid var(--paper-line);border-radius:4px;padding:14px 16px;margin-bottom:20px;}
+  .filters{display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap;background:#fff;border:1px solid var(--paper-line);border-radius:4px;padding:14px 16px;margin-bottom:20px;}
   .field{display:flex;flex-direction:column;gap:5px;}
   .field label{font-size:10.5px;text-transform:uppercase;letter-spacing:0.06em;color:var(--muted);font-weight:600;}
   .field input,.field select{font-family:var(--mono);font-size:13px;border:1px solid var(--paper-line);border-radius:3px;padding:7px 10px;background:var(--paper);color:var(--ink);}
-  .field input{min-width:140px;}
-  .field select{min-width:165px;cursor:pointer;}
+  .field input{min-width:136px;}
+  .field select{min-width:160px;cursor:pointer;}
+  .field select.wide{min-width:220px;}
   .field input:focus,.field select:focus{outline:2px solid var(--ink);outline-offset:1px;}
   .btn{font-family:var(--sans);font-weight:600;font-size:13px;background:var(--ink);color:var(--paper);border:none;border-radius:3px;padding:9px 20px;cursor:pointer;}
   .btn:hover{background:#0e1a20;}
   .estado{font-family:var(--mono);font-size:12px;color:var(--muted);margin:-8px 0 18px;min-height:16px;}
   .estado.error{color:var(--cemei);}
   .summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1px;background:var(--paper-line);border:1px solid var(--paper-line);margin-bottom:28px;}
-  .summary .card{background:#fff;padding:16px 18px;}
-  .summary .card .label{font-size:10.5px;text-transform:uppercase;letter-spacing:0.06em;color:var(--muted);font-weight:600;margin-bottom:8px;}
-  .summary .card .value{font-family:var(--mono);font-size:19px;font-weight:600;font-variant-numeric:tabular-nums;}
+  .summary .card{background:#fff;padding:14px 16px;}
+  .summary .card .label{font-size:10.5px;text-transform:uppercase;letter-spacing:0.06em;color:var(--muted);font-weight:600;margin-bottom:6px;}
+  .summary .card .value{font-family:var(--mono);font-size:18px;font-weight:600;font-variant-numeric:tabular-nums;}
   .summary .card.sig .value{color:var(--sig);}
   .summary .card.cemei .value{color:var(--cemei);}
   .summary .card.neo .value{color:var(--neo);}
-  .summary .card.farm .value{color:var(--farm);}
   section.block{margin-bottom:32px;}
   .block-title{font-family:var(--display);font-size:18px;font-weight:600;display:flex;align-items:baseline;gap:8px;margin-bottom:12px;}
   .block-title .n{font-family:var(--mono);font-size:11px;color:var(--muted);}
   .chart-card{background:#fff;border:1px solid var(--paper-line);border-radius:4px;padding:20px;height:340px;}
-  table{width:100%;border-collapse:collapse;background:#fff;}
-  thead th{text-align:left;font-size:10.5px;text-transform:uppercase;letter-spacing:0.05em;color:var(--muted);font-weight:600;padding:10px 12px;border-bottom:2px solid var(--ink);position:sticky;top:0;background:#fff;white-space:nowrap;}
-  tbody td{padding:9px 12px;border-bottom:1px solid var(--paper-line);font-size:13px;vertical-align:top;}
-  tbody tr:hover{background:var(--paper);}
+  /* Tabla resumen categorías */
+  .cat-tabla{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--paper-line);}
+  .cat-tabla th{text-align:left;font-size:10.5px;text-transform:uppercase;letter-spacing:0.05em;color:var(--muted);font-weight:600;padding:10px 12px;border-bottom:2px solid var(--ink);}
+  .cat-tabla td{padding:9px 12px;border-bottom:1px solid var(--paper-line);font-size:13px;}
+  .cat-tabla .num{text-align:right;font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:nowrap;}
+  .cat-tabla tr.cat-row td{font-weight:700;background:var(--paper);font-size:12.5px;}
+  .cat-tabla tr.sub-row td:first-child{padding-left:28px;color:var(--muted);}
+  .cat-tabla tr.total-row td{font-weight:700;border-top:2px solid var(--ink);padding-top:12px;}
+  /* Tabla pagos */
+  table.pagos-tabla{width:100%;border-collapse:collapse;background:#fff;}
+  table.pagos-tabla thead th{text-align:left;font-size:10.5px;text-transform:uppercase;letter-spacing:0.05em;color:var(--muted);font-weight:600;padding:10px 12px;border-bottom:2px solid var(--ink);position:sticky;top:0;background:#fff;white-space:nowrap;}
+  table.pagos-tabla tbody td{padding:9px 12px;border-bottom:1px solid var(--paper-line);font-size:13px;vertical-align:top;}
+  table.pagos-tabla tbody tr:hover{background:var(--paper);}
   td.num{font-family:var(--mono);font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap;}
-  td.small{color:var(--muted);font-size:12px;max-width:280px;}
+  td.small{color:var(--muted);font-size:12px;max-width:240px;}
   .badge{font-family:var(--mono);font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;padding:2px 7px;border-radius:3px;display:inline-block;white-space:nowrap;}
   .badge.sig{background:var(--sig-soft);color:var(--sig);}
   .badge.cemei{background:var(--cemei-soft);color:var(--cemei);}
   .badge.neo{background:var(--neo-soft);color:var(--neo);}
-  .badge.farm{background:var(--farm-soft);color:var(--farm);}
-  .badge.odonto{background:#EDE8F5;color:#5B3E8E;}
+  .pill{font-size:11px;color:var(--muted);background:var(--paper);border:1px solid var(--paper-line);padding:2px 8px;border-radius:12px;display:inline-block;white-space:nowrap;}
   .table-scroll{max-height:500px;overflow:auto;border:1px solid var(--paper-line);}
   .table-scroll table{border:none;}
+  /* Ingresos */
+  .badge.farm{background:#F5EFE0;color:#7A5E2E;}
+  .badge.odonto{background:#EDE8F5;color:#5B3E8E;}
   footer{margin-top:40px;padding-top:14px;border-top:1px solid var(--paper-line);font-family:var(--mono);font-size:10.5px;color:var(--muted);text-align:center;}
 </style>
 </head>
@@ -87,7 +97,7 @@
     <button class="tab" onclick="cambiarTab('ingresos',this)">Ingresos</button>
   </div>
 
-  <!-- EGRESOS -->
+  <!-- ═══════════════════ EGRESOS ═══════════════════ -->
   <div id="tab-egresos" class="tab-panel active">
     <div class="filters">
       <div class="field"><label>Fecha desde</label><input type="date" id="eg-desde"/></div>
@@ -102,15 +112,14 @@
         </select>
       </div>
       <div class="field">
-        <label>Unidad CEMEI</label>
-        <select id="eg-unidad">
-          <option value="">Todas</option>
-          <option value="CEMEI SRL">CEMEI SRL</option>
-          <option value="CEMEI Odontología">CEMEI Odontología</option>
-          <option value="Farmacia">Farmacia</option>
-        </select>
+        <label>Categoría</label>
+        <select id="eg-cat" class="wide"><option value="">Todas</option></select>
       </div>
-      <div class="field" style="min-width:220px;">
+      <div class="field">
+        <label>Subcategoría</label>
+        <select id="eg-sub" class="wide"><option value="">Todas</option></select>
+      </div>
+      <div class="field" style="min-width:210px;">
         <label>URL del backend</label>
         <input type="text" id="eg-backend" value="https://reporte-financiero-backend.onrender.com"/>
       </div>
@@ -118,22 +127,32 @@
     </div>
     <div class="estado" id="eg-estado"></div>
     <div class="summary" id="eg-summary"></div>
+
     <section class="block">
-      <div class="block-title">Importe por rubro <span class="n" id="eg-rubroN"></span></div>
+      <div class="block-title">Por categoría y subcategoría <span class="n" id="eg-catN"></span></div>
+      <table class="cat-tabla">
+        <thead><tr><th>Categoría / Subcategoría</th><th class="num">Pagos</th><th class="num">Total</th></tr></thead>
+        <tbody id="eg-cat-tbody"></tbody>
+      </table>
+    </section>
+
+    <section class="block">
+      <div class="block-title">Importe por subcategoría <span class="n" id="eg-rubroN"></span></div>
       <div class="chart-card"><canvas id="eg-chart"></canvas></div>
     </section>
+
     <section class="block">
       <div class="block-title">Pagos <span class="n" id="eg-tablaN"></span></div>
       <div class="table-scroll">
-        <table>
-          <thead><tr><th>Fecha</th><th>Empresa</th><th>Unidad</th><th>Proveedor</th><th>Rubro</th><th class="num">Importe</th><th>Concepto</th></tr></thead>
+        <table class="pagos-tabla">
+          <thead><tr><th>Fecha</th><th>Empresa</th><th>Categoría</th><th>Subcategoría</th><th>Proveedor</th><th class="num">Importe</th><th>Concepto</th></tr></thead>
           <tbody id="eg-tbody"></tbody>
         </table>
       </div>
     </section>
   </div>
 
-  <!-- INGRESOS -->
+  <!-- ═══════════════════ INGRESOS ═══════════════════ -->
   <div id="tab-ingresos" class="tab-panel">
     <div class="filters">
       <div class="field"><label>Fecha desde</label><input type="date" id="ing-desde"/></div>
@@ -149,11 +168,9 @@
       </div>
       <div class="field">
         <label>Sucursal CEMEI</label>
-        <select id="ing-sucursal">
-          <option value="">Todas</option>
-        </select>
+        <select id="ing-sucursal"><option value="">Todas</option></select>
       </div>
-      <div class="field" style="min-width:220px;">
+      <div class="field" style="min-width:210px;">
         <label>URL del backend</label>
         <input type="text" id="ing-backend" value="https://reporte-financiero-backend.onrender.com"/>
       </div>
@@ -161,15 +178,12 @@
     </div>
     <div class="estado" id="ing-estado"></div>
     <div class="summary" id="ing-summary"></div>
+
     <section class="block">
       <div class="block-title">Resumen por tipo <span class="n" id="ing-tipoN"></span></div>
       <div style="background:#fff;border:1px solid var(--paper-line);border-radius:4px;overflow:hidden;">
-        <table style="width:100%;border-collapse:collapse;">
-          <thead><tr>
-            <th style="text-align:left;font-size:10.5px;text-transform:uppercase;letter-spacing:0.05em;color:var(--muted);font-weight:600;padding:10px 12px;border-bottom:2px solid var(--ink);">Tipo</th>
-            <th style="text-align:right;font-size:10.5px;text-transform:uppercase;letter-spacing:0.05em;color:var(--muted);font-weight:600;padding:10px 12px;border-bottom:2px solid var(--ink);">Cobros</th>
-            <th style="text-align:right;font-size:10.5px;text-transform:uppercase;letter-spacing:0.05em;color:var(--muted);font-weight:600;padding:10px 12px;border-bottom:2px solid var(--ink);">Total</th>
-          </tr></thead>
+        <table class="cat-tabla">
+          <thead><tr><th>Tipo</th><th class="num">Cobros</th><th class="num">Total</th></tr></thead>
           <tbody id="ing-tipo-tbody"></tbody>
         </table>
       </div>
@@ -179,10 +193,11 @@
       <div class="block-title">Cobros por sucursal / empresa <span class="n" id="ing-empresaN"></span></div>
       <div class="chart-card"><canvas id="ing-chart"></canvas></div>
     </section>
+
     <section class="block">
       <div class="block-title">Detalle de cobros <span class="n" id="ing-tablaN"></span></div>
       <div class="table-scroll">
-        <table>
+        <table class="pagos-tabla">
           <thead><tr><th>Fecha Cobro</th><th>Empresa</th><th>Sucursal</th><th>Cliente</th><th>Forma de Pago</th><th class="num">Monto</th><th>Concepto</th></tr></thead>
           <tbody id="ing-tbody"></tbody>
         </table>
@@ -194,14 +209,17 @@
 </div>
 
 <script>
+// ══════════════════════════════════════════════════════
+// HELPERS
+// ══════════════════════════════════════════════════════
 let egChart=null, ingChart=null;
 let egBrutos=[], ingBrutos=[];
 
-function hoyISO(){ return new Date().toISOString().slice(0,10); }
-function primerDiaMes(){ const d=new Date(); return new Date(d.getFullYear(),d.getMonth(),1).toISOString().slice(0,10); }
-function formatARS(n){ return new Intl.NumberFormat('es-AR',{style:'currency',currency:'ARS',maximumFractionDigits:0}).format(n||0); }
-function formatFecha(iso){ if(!iso) return '—'; const [y,m,d]=iso.split('-'); return `${d}/${m}/${y}`; }
-function esc(s){ return String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+const hoyISO=()=>new Date().toISOString().slice(0,10);
+const primerDiaMes=()=>{ const d=new Date(); return new Date(d.getFullYear(),d.getMonth(),1).toISOString().slice(0,10); };
+const formatARS=n=>new Intl.NumberFormat('es-AR',{style:'currency',currency:'ARS',maximumFractionDigits:0}).format(n||0);
+const formatFecha=iso=>{ if(!iso) return '—'; const [y,m,d]=iso.split('-'); return `${d}/${m}/${y}`; };
+const esc=s=>String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
 function empresaKey(origen){
   if(!origen) return 'SIG';
@@ -209,19 +227,9 @@ function empresaKey(origen){
   if(origen.includes('Neoform')) return 'NEO';
   return 'SIG';
 }
-
 function badgeEmpresa(origen){
   const k=empresaKey(origen);
-  const label=k==='CEMEI'?'CEMEI':k==='NEO'?'NEO':'SIG';
-  return `<span class="badge ${k.toLowerCase()}">${label}</span>`;
-}
-
-function badgeUnidad(unidad){
-  if(!unidad) return '<span style="color:var(--muted);font-size:12px">—</span>';
-  if(unidad==='Farmacia') return `<span class="badge farm">Farmacia</span>`;
-  if(unidad==='CEMEI Odontología') return `<span class="badge odonto">Odonto</span>`;
-  if(unidad==='CEMEI SRL') return `<span class="badge cemei">SRL</span>`;
-  return `<span style="font-size:12px;color:var(--muted)">${esc(unidad)}</span>`;
+  return `<span class="badge ${k.toLowerCase()}">${k==='CEMEI'?'CEMEI':k==='NEO'?'NEO':'SIG'}</span>`;
 }
 
 function cambiarTab(id,btn){
@@ -231,14 +239,16 @@ function cambiarTab(id,btn){
   btn.classList.add('active');
 }
 
-// ---- EGRESOS ----
+// ══════════════════════════════════════════════════════
+// EGRESOS
+// ══════════════════════════════════════════════════════
 async function consultarEgresos(){
   const desde=document.getElementById('eg-desde').value;
   const hasta=document.getElementById('eg-hasta').value;
   const backend=document.getElementById('eg-backend').value.trim().replace(/\/$/,'');
   const estado=document.getElementById('eg-estado');
-  if(!desde){estado.textContent='La fecha "desde" es obligatoria.';estado.className='estado error';return;}
-  estado.className='estado';estado.textContent='Consultando…';
+  if(!desde){ estado.textContent='La fecha "desde" es obligatoria.'; estado.className='estado error'; return; }
+  estado.className='estado'; estado.textContent='Consultando…';
   try{
     const resp=await fetch(`${backend}/api/pagos?desde=${desde}&hasta=${hasta||desde}`);
     if(!resp.ok) throw new Error(`HTTP ${resp.status}`);
@@ -246,6 +256,7 @@ async function consultarEgresos(){
     egBrutos=data.pagos;
     estado.textContent=`${data.total} pagos encontrados.`;
     document.getElementById('stampFecha').textContent=`Actualizado: ${new Date().toLocaleString('es-AR')}`;
+    poblarFiltrosCat(egBrutos);
     renderEgresos();
   }catch(err){
     estado.className='estado error';
@@ -253,12 +264,34 @@ async function consultarEgresos(){
   }
 }
 
+function poblarFiltrosCat(pagos){
+  // Categorías únicas
+  const cats=[...new Set(pagos.map(p=>p.categoria).filter(Boolean))].sort();
+  const selCat=document.getElementById('eg-cat');
+  const valCat=selCat.value;
+  selCat.innerHTML='<option value="">Todas</option>';
+  cats.forEach(c=>{ const o=document.createElement('option'); o.value=c; o.textContent=c; if(c===valCat)o.selected=true; selCat.appendChild(o); });
+  actualizarSubcats(pagos);
+}
+
+function actualizarSubcats(pagos){
+  const cat=document.getElementById('eg-cat').value;
+  const filtrados=cat ? pagos.filter(p=>p.categoria===cat) : pagos;
+  const subs=[...new Set(filtrados.map(p=>p.subcategoria).filter(Boolean))].sort();
+  const selSub=document.getElementById('eg-sub');
+  const valSub=selSub.value;
+  selSub.innerHTML='<option value="">Todas</option>';
+  subs.forEach(s=>{ const o=document.createElement('option'); o.value=s; o.textContent=s; if(s===valSub)o.selected=true; selSub.appendChild(o); });
+}
+
 function filtrarEgresos(){
   const emp=document.getElementById('eg-empresa').value;
-  const uni=document.getElementById('eg-unidad').value;
+  const cat=document.getElementById('eg-cat').value;
+  const sub=document.getElementById('eg-sub').value;
   return egBrutos.filter(p=>{
     if(emp && empresaKey(p.origen)!==emp) return false;
-    if(uni && p.unidad!==uni) return false;
+    if(cat && p.categoria!==cat) return false;
+    if(sub && p.subcategoria!==sub) return false;
     return true;
   });
 }
@@ -269,52 +302,95 @@ function renderEgresos(){
   const sig=pagos.filter(p=>empresaKey(p.origen)==='SIG').reduce((a,p)=>a+(p.importe||0),0);
   const cemei=pagos.filter(p=>empresaKey(p.origen)==='CEMEI').reduce((a,p)=>a+(p.importe||0),0);
   const neo=pagos.filter(p=>empresaKey(p.origen)==='NEO').reduce((a,p)=>a+(p.importe||0),0);
-  // Sub-totales CEMEI
-  const cemeiSRL=pagos.filter(p=>p.unidad==='CEMEI SRL').reduce((a,p)=>a+(p.importe||0),0);
-  const cemeiOdo=pagos.filter(p=>p.unidad==='CEMEI Odontología').reduce((a,p)=>a+(p.importe||0),0);
-  const farm=pagos.filter(p=>p.unidad==='Farmacia').reduce((a,p)=>a+(p.importe||0),0);
-
   document.getElementById('eg-summary').innerHTML=`
     <div class="card"><div class="label">Total general</div><div class="value">${formatARS(total)}</div></div>
     <div class="card sig"><div class="label">Salud Integral</div><div class="value">${formatARS(sig)}</div></div>
-    <div class="card cemei"><div class="label">CEMEI SRL</div><div class="value">${formatARS(cemeiSRL)}</div></div>
-    <div class="card odonto" style="background:#fff"><div class="label" style="color:var(--muted)">CEMEI Odonto</div><div class="value" style="color:#5B3E8E">${formatARS(cemeiOdo)}</div></div>
-    <div class="card farm"><div class="label">Farmacia</div><div class="value">${formatARS(farm)}</div></div>
+    <div class="card cemei"><div class="label">CEMEI</div><div class="value">${formatARS(cemei)}</div></div>
     <div class="card neo"><div class="label">Neoform</div><div class="value">${formatARS(neo)}</div></div>
     <div class="card"><div class="label">Pagos</div><div class="value">${pagos.length}</div></div>`;
 
-  const porRubro={};
-  pagos.forEach(p=>{const r=p.rubro||'Sin rubro';porRubro[r]=(porRubro[r]||0)+(p.importe||0);});
-  const entradas=Object.entries(porRubro).sort((a,b)=>b[1]-a[1]).slice(0,14);
-  document.getElementById('eg-rubroN').textContent=`(${Object.keys(porRubro).length} rubros)`;
+  // Tabla agrupada por categoría > subcategoría
+  const arbol={};
+  pagos.forEach(p=>{
+    const cat=p.categoria||'Sin clasificar';
+    const sub=p.subcategoria||'Sin subcategoría';
+    if(!arbol[cat]) arbol[cat]={total:0,count:0,subs:{}};
+    arbol[cat].total+=(p.importe||0); arbol[cat].count++;
+    if(!arbol[cat].subs[sub]) arbol[cat].subs[sub]={total:0,count:0};
+    arbol[cat].subs[sub].total+=(p.importe||0); arbol[cat].subs[sub].count++;
+  });
+  const totalGeneral=pagos.reduce((a,p)=>a+(p.importe||0),0);
+  document.getElementById('eg-catN').textContent=`(${Object.keys(arbol).length} categorías)`;
+  let html='';
+  Object.entries(arbol).sort((a,b)=>b[1].total-a[1].total).forEach(([cat,datos])=>{
+    html+=`<tr class="cat-row"><td>${esc(cat)}</td><td class="num">${datos.count}</td><td class="num">${formatARS(datos.total)}</td></tr>`;
+    Object.entries(datos.subs).sort((a,b)=>b[1].total-a[1].total).forEach(([sub,s])=>{
+      html+=`<tr class="sub-row"><td>${esc(sub)}</td><td class="num" style="color:var(--muted)">${s.count}</td><td class="num" style="color:var(--muted)">${formatARS(s.total)}</td></tr>`;
+    });
+  });
+  html+=`<tr class="total-row"><td><strong>TOTAL</strong></td><td class="num">${pagos.length}</td><td class="num">${formatARS(totalGeneral)}</td></tr>`;
+  document.getElementById('eg-cat-tbody').innerHTML=html;
+
+  // Gráfico: si hay categoría seleccionada → por subcategoría; si no → por categoría
+  const catSel=document.getElementById('eg-cat').value;
+  const COLS=['#0F6657','#B5563C','#2E5E8E','#7A5E2E','#5B3E8E','#1A6B6B','#8E6B2E','#2E8E6B'];
+  let labels,valores;
+  if(catSel){
+    const subMap={};
+    pagos.forEach(p=>{ const s=p.subcategoria||'Sin sub'; subMap[s]=(subMap[s]||0)+(p.importe||0); });
+    const ents=Object.entries(subMap).sort((a,b)=>b[1]-a[1]);
+    labels=ents.map(e=>e[0]); valores=ents.map(e=>e[1]);
+    document.getElementById('eg-rubroN').textContent=`(${ents.length} subcategorías de "${catSel}")`;
+  } else {
+    const catMap={};
+    pagos.forEach(p=>{ const c=p.categoria||'Sin cat'; catMap[c]=(catMap[c]||0)+(p.importe||0); });
+    const ents=Object.entries(catMap).sort((a,b)=>b[1]-a[1]);
+    labels=ents.map(e=>e[0]); valores=ents.map(e=>e[1]);
+    document.getElementById('eg-rubroN').textContent=`(${ents.length} categorías)`;
+  }
   const ctx=document.getElementById('eg-chart').getContext('2d');
   if(egChart) egChart.destroy();
-  egChart=new Chart(ctx,{type:'bar',data:{labels:entradas.map(e=>e[0]),datasets:[{data:entradas.map(e=>e[1]),backgroundColor:'#0F6657',borderRadius:2,maxBarThickness:28}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>formatARS(c.parsed.x)}}},scales:{x:{ticks:{callback:v=>formatARS(v),font:{family:'IBM Plex Mono',size:10}},grid:{color:'#EFEAE0'}},y:{ticks:{font:{family:'Inter',size:11}},grid:{display:false}}}}});
+  egChart=new Chart(ctx,{type:'bar',data:{labels,datasets:[{data:valores,backgroundColor:valores.map((_,i)=>COLS[i%COLS.length]),borderRadius:2,maxBarThickness:36}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>formatARS(c.parsed.x)}}},scales:{x:{ticks:{callback:v=>formatARS(v),font:{family:'IBM Plex Mono',size:10}},grid:{color:'#EFEAE0'}},y:{ticks:{font:{family:'Inter',size:11}},grid:{display:false}}}}});
 
+  // Tabla de pagos
   document.getElementById('eg-tablaN').textContent=`(${pagos.length})`;
   const ord=[...pagos].sort((a,b)=>(b.fechaCobro||'').localeCompare(a.fechaCobro||''));
   document.getElementById('eg-tbody').innerHTML=ord.map(p=>`<tr>
     <td>${formatFecha(p.fechaCobro)}</td>
     <td>${badgeEmpresa(p.origen)}</td>
-    <td>${badgeUnidad(p.unidad)}</td>
+    <td><span class="pill">${esc(p.categoria||'—')}</span></td>
+    <td style="font-size:12px;color:var(--muted)">${esc(p.subcategoria||'—')}</td>
     <td>${esc(p.proveedor)}</td>
-    <td>${esc(p.rubro)}</td>
     <td class="num">${formatARS(p.importe)}</td>
     <td class="small">${esc(p.concepto)}</td>
   </tr>`).join('');
 }
 
-document.getElementById('eg-empresa').addEventListener('change',()=>{if(egBrutos.length)renderEgresos();});
-document.getElementById('eg-unidad').addEventListener('change',()=>{if(egBrutos.length)renderEgresos();});
+// Listeners cascada
+document.getElementById('eg-empresa').addEventListener('change',()=>{ if(egBrutos.length){ actualizarSubcats(filtrarEgresosBase()); renderEgresos(); }});
+document.getElementById('eg-cat').addEventListener('change',()=>{ if(egBrutos.length){ actualizarSubcats(filtrarEgresosBase()); renderEgresos(); }});
+document.getElementById('eg-sub').addEventListener('change',()=>{ if(egBrutos.length) renderEgresos(); });
 
-// ---- INGRESOS ----
+function filtrarEgresosBase(){
+  const emp=document.getElementById('eg-empresa').value;
+  const cat=document.getElementById('eg-cat').value;
+  return egBrutos.filter(p=>{
+    if(emp && empresaKey(p.origen)!==emp) return false;
+    if(cat && p.categoria!==cat) return false;
+    return true;
+  });
+}
+
+// ══════════════════════════════════════════════════════
+// INGRESOS
+// ══════════════════════════════════════════════════════
 async function consultarIngresos(){
   const desde=document.getElementById('ing-desde').value;
   const hasta=document.getElementById('ing-hasta').value;
   const backend=document.getElementById('ing-backend').value.trim().replace(/\/$/,'');
   const estado=document.getElementById('ing-estado');
-  if(!desde){estado.textContent='La fecha "desde" es obligatoria.';estado.className='estado error';return;}
-  estado.className='estado';estado.textContent='Consultando…';
+  if(!desde){ estado.textContent='La fecha "desde" es obligatoria.'; estado.className='estado error'; return; }
+  estado.className='estado'; estado.textContent='Consultando…';
   try{
     const resp=await fetch(`${backend}/api/cobros?desde=${desde}&hasta=${hasta||desde}`);
     if(!resp.ok) throw new Error(`HTTP ${resp.status}`);
@@ -335,12 +411,7 @@ function poblarFiltroSucursal(cobros){
   const sel=document.getElementById('ing-sucursal');
   const val=sel.value;
   sel.innerHTML='<option value="">Todas</option>';
-  [...suc].sort().forEach(s=>{
-    const o=document.createElement('option');
-    o.value=s; o.textContent=s;
-    if(s===val) o.selected=true;
-    sel.appendChild(o);
-  });
+  [...suc].sort().forEach(s=>{ const o=document.createElement('option'); o.value=s; o.textContent=s; if(s===val)o.selected=true; sel.appendChild(o); });
 }
 
 function filtrarIngresos(){
@@ -366,45 +437,38 @@ function renderIngresos(){
     <div class="card neo"><div class="label">Neoform</div><div class="value">${formatARS(neo)}</div></div>
     <div class="card"><div class="label">Cobros</div><div class="value">${cobros.length}</div></div>`;
 
-  // Agrupar por sucursal (para CEMEI/NEO) o por empresa (para SIG que no tiene sucursal)
-  const porSucursal={};
-  cobros.forEach(c=>{
-    const key = c.sucursal || c.empresa || 'Sin clasificar';
-    porSucursal[key]=(porSucursal[key]||0)+(c.monto||0);
-  });
-  const entradas=Object.entries(porSucursal).sort((a,b)=>b[1]-a[1]);
-  document.getElementById('ing-empresaN').textContent=`(${entradas.length} sucursales/empresas)`;
-  const COLS=['#0F6657','#B5563C','#2E5E8E','#7A5E2E','#5B3E8E','#1A6B6B'];
-  const ctx2=document.getElementById('ing-chart').getContext('2d');
-  if(ingChart) ingChart.destroy();
-  ingChart=new Chart(ctx2,{type:'bar',data:{labels:entradas.map(e=>e[0]),datasets:[{data:entradas.map(e=>e[1]),backgroundColor:entradas.map((_,i)=>COLS[i%COLS.length]),borderRadius:2,maxBarThickness:64}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>formatARS(c.parsed.y)}}},scales:{x:{ticks:{font:{family:'Inter',size:12}},grid:{display:false}},y:{ticks:{callback:v=>formatARS(v),font:{family:'IBM Plex Mono',size:10}},grid:{color:'#EFEAE0'}}}}});
-
   // Resumen por tipo
   const porTipo={};
-  cobros.forEach(c2=>{
-    const t=c2.tipoFactura||'Sin tipo';
-    if(!porTipo[t]) porTipo[t]={cantidad:0,total:0};
-    porTipo[t].cantidad++;
-    porTipo[t].total+=(c2.monto||0);
-  });
-  const tipoEntradas=Object.entries(porTipo).sort((a,b)=>b[1].total-a[1].total);
-  document.getElementById('ing-tipoN').textContent=`(${tipoEntradas.length})`;
-  const totalTipo=tipoEntradas.reduce((a,e)=>a+e[1].total,0);
-  document.getElementById('ing-tipo-tbody').innerHTML=tipoEntradas.map(([tipo,datos])=>`<tr>
-    <td style="padding:9px 12px;border-bottom:1px solid var(--paper-line);font-size:13px;">${esc(tipo)}</td>
-    <td style="padding:9px 12px;border-bottom:1px solid var(--paper-line);font-size:13px;text-align:right;font-family:var(--mono)">${datos.cantidad}</td>
-    <td style="padding:9px 12px;border-bottom:1px solid var(--paper-line);font-size:13px;text-align:right;font-family:var(--mono);font-variant-numeric:tabular-nums">${formatARS(datos.total)}</td>
+  cobros.forEach(c=>{ const t=c.tipoFactura||'Sin tipo'; if(!porTipo[t]) porTipo[t]={cantidad:0,total:0}; porTipo[t].cantidad++; porTipo[t].total+=(c.monto||0); });
+  const tipoEnts=Object.entries(porTipo).sort((a,b)=>b[1].total-a[1].total);
+  document.getElementById('ing-tipoN').textContent=`(${tipoEnts.length})`;
+  const totalTipo=tipoEnts.reduce((a,e)=>a+e[1].total,0);
+  document.getElementById('ing-tipo-tbody').innerHTML=tipoEnts.map(([t,d])=>`<tr>
+    <td style="padding:9px 12px;border-bottom:1px solid var(--paper-line);font-size:13px">${esc(t)}</td>
+    <td style="padding:9px 12px;border-bottom:1px solid var(--paper-line);font-size:13px;text-align:right;font-family:var(--mono)">${d.cantidad}</td>
+    <td style="padding:9px 12px;border-bottom:1px solid var(--paper-line);font-size:13px;text-align:right;font-family:var(--mono);font-variant-numeric:tabular-nums">${formatARS(d.total)}</td>
   </tr>`).join('')+`<tr>
-    <td style="padding:10px 12px;font-weight:700;font-size:13px;border-top:2px solid var(--ink);">Total</td>
+    <td style="padding:10px 12px;font-weight:700;border-top:2px solid var(--ink)">Total</td>
     <td style="padding:10px 12px;font-weight:700;text-align:right;font-family:var(--mono);border-top:2px solid var(--ink)">${cobros.length}</td>
     <td style="padding:10px 12px;font-weight:700;text-align:right;font-family:var(--mono);font-variant-numeric:tabular-nums;border-top:2px solid var(--ink)">${formatARS(totalTipo)}</td>
   </tr>`;
 
+  // Gráfico por sucursal/empresa
+  const porSuc={};
+  cobros.forEach(c=>{ const k=c.sucursal||c.empresa||'Sin clasificar'; porSuc[k]=(porSuc[k]||0)+(c.monto||0); });
+  const sucEnts=Object.entries(porSuc).sort((a,b)=>b[1]-a[1]);
+  document.getElementById('ing-empresaN').textContent=`(${sucEnts.length})`;
+  const COLS2=['#0F6657','#B5563C','#2E5E8E','#7A5E2E','#5B3E8E','#1A6B6B'];
+  const ctx2=document.getElementById('ing-chart').getContext('2d');
+  if(ingChart) ingChart.destroy();
+  ingChart=new Chart(ctx2,{type:'bar',data:{labels:sucEnts.map(e=>e[0]),datasets:[{data:sucEnts.map(e=>e[1]),backgroundColor:sucEnts.map((_,i)=>COLS2[i%COLS2.length]),borderRadius:2,maxBarThickness:48}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>formatARS(c.parsed.y)}}},scales:{x:{ticks:{font:{family:'Inter',size:12}},grid:{display:false}},y:{ticks:{callback:v=>formatARS(v),font:{family:'IBM Plex Mono',size:10}},grid:{color:'#EFEAE0'}}}}});
+
+  // Tabla cobros
   document.getElementById('ing-tablaN').textContent=`(${cobros.length})`;
   document.getElementById('ing-tbody').innerHTML=cobros.map(c=>`<tr>
     <td>${formatFecha(c.fechaCobro)}</td>
     <td>${badgeEmpresa(c.empresa)}</td>
-    <td>${c.sucursal ? `<span style="font-size:12px;color:var(--muted)">${esc(c.sucursal)}</span>` : '—'}</td>
+    <td>${c.sucursal?`<span style="font-size:12px;color:var(--muted)">${esc(c.sucursal)}</span>`:'—'}</td>
     <td>${esc(c.cliente)}</td>
     <td>${esc(c.formaPago)}</td>
     <td class="num">${formatARS(c.monto)}</td>
@@ -412,10 +476,12 @@ function renderIngresos(){
   </tr>`).join('');
 }
 
-document.getElementById('ing-empresa').addEventListener('change',()=>{if(ingBrutos.length)renderIngresos();});
-document.getElementById('ing-sucursal').addEventListener('change',()=>{if(ingBrutos.length)renderIngresos();});
+document.getElementById('ing-empresa').addEventListener('change',()=>{ if(ingBrutos.length) renderIngresos(); });
+document.getElementById('ing-sucursal').addEventListener('change',()=>{ if(ingBrutos.length) renderIngresos(); });
 
+// ══════════════════════════════════════════════════════
 // INIT
+// ══════════════════════════════════════════════════════
 ['eg-desde','ing-desde'].forEach(id=>document.getElementById(id).value=primerDiaMes());
 ['eg-hasta','ing-hasta'].forEach(id=>document.getElementById(id).value=hoyISO());
 </script>
